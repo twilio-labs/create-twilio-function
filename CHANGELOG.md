@@ -4,6 +4,7 @@
 
 - Minor updates
   - Better error messages if the cli fails to create a directory. Fixes #14
+  - Exports details about the cli command so that other projects can consume it. Fixes #12
 
 ## 1.0.1 (May 4, 2018) [☰](https://github.com/twilio-labs/create-twilio-function/compare/v1.0.0...v1.0.1)
 

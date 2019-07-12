@@ -6,6 +6,8 @@ const open = promisify(fs.open);
 const write = promisify(fs.write);
 const readdir = promisify(fs.readdir);
 const copyFile = promisify(fs.copyFile);
+const { COPYFILE_EXCL } = fs.constants;
+const stat = promisify(fs.stat);
 
 function createDirectory(path, dirName) {
   return mkdir(path + '/' + dirName);
@@ -39,22 +41,26 @@ function createPackageJSON(path, name) {
   return createFile(fullPath, packageJSON);
 }
 
-function createExampleFromTemplates(path) {
-  return readdir('./templates').then(dirs =>
-    Promise.all(
-      dirs.map(dir =>
-        mkdir(`${path}/${dir}`)
-          .then(() => readdir(`./templates/${dir}`))
-          .then(files =>
-            Promise.all(
-              files.map(file =>
-                copyFile(`./templates/${dir}/${file}`, `${path}/${dir}/${file}`)
-              )
-            )
-          )
+function copyRecursively(src, dest) {
+  return readdir(src).then(children => {
+    return Promise.all(
+      children.map(child =>
+        copyFile(`./${src}/${child}`, `${dest}/${child}`, COPYFILE_EXCL).then(
+          () => {
+            return stat(`${src}/${child}`).then(stat => {
+              if (stat.isDirectory()) {
+                return copyRecursively(`${src}/${child}`, `${dest}/${child}`);
+              }
+            });
+          }
+        )
       )
-    )
-  );
+    );
+  });
+}
+
+function createExampleFromTemplates(path) {
+  return copyRecursively('./templates', path);
 }
 
 function createEnvFile(path, { accountSid, authToken }) {

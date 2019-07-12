@@ -73,8 +73,11 @@ describe('createTwilioFunction', () => {
     const assets = await stat(`./scratch/${name}/assets`);
     expect(assets.isDirectory());
 
-    const example = await stat(`./scratch/${name}/functions/example.js`);
+    const example = await stat(`./scratch/${name}/functions/hello-world.js`);
     expect(example.isFile());
+
+    const asset = await stat(`./scratch/${name}/assets/index.html`);
+    expect(asset.isFile());
 
     expect(installDependencies).toHaveBeenCalledWith(`./scratch/${name}`);
 

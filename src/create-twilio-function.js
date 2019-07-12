@@ -2,7 +2,7 @@ const { promptForAccountDetails } = require('./create-twilio-function/prompt');
 const {
   createDirectory,
   createEnvFile,
-  createExampleFunction,
+  createExampleFromTemplates,
   createPackageJSON,
   createNvmrcFile
 } = require('./create-twilio-function/create-files');
@@ -52,14 +52,14 @@ async function createTwilioFunction(config) {
   // Scaffold project
   const spinner = ora();
   spinner.start('Creating project directories and files');
-  await createDirectory(projectDir, 'functions');
-  await createDirectory(projectDir, 'assets');
+  // await createDirectory(projectDir, 'functions');
+  // await createDirectory(projectDir, 'assets');
   await createEnvFile(projectDir, {
     accountSid: config.accountSid,
     authToken: config.authToken
   });
   await createNvmrcFile(projectDir);
-  await createExampleFunction(`${projectDir}/functions`);
+  await createExampleFromTemplates(projectDir);
   await createPackageJSON(projectDir, config.name);
   spinner.succeed();
 

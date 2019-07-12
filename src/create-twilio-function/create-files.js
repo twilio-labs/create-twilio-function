@@ -4,6 +4,8 @@ const { promisify } = require('util');
 const mkdir = promisify(fs.mkdir);
 const open = promisify(fs.open);
 const write = promisify(fs.write);
+const readdir = promisify(fs.readdir);
+const copyFile = promisify(fs.copyFile);
 
 function createDirectory(path, dirName) {
   return mkdir(path + '/' + dirName);
@@ -37,14 +39,22 @@ function createPackageJSON(path, name) {
   return createFile(fullPath, packageJSON);
 }
 
-function createExampleFunction(path) {
-  const content = `exports.handler = function(context, event, callback) {
-  const twiml = new Twilio.twiml.VoiceResponse();
-  twiml.say("Hello World!");
-  callback(null, twiml);
-};`;
-  const fullPath = `${path}/example.js`;
-  return createFile(fullPath, content);
+function createExampleFromTemplates(path) {
+  return readdir('./templates').then(dirs =>
+    Promise.all(
+      dirs.map(dir =>
+        mkdir(`${path}/${dir}`)
+          .then(() => readdir(`./templates/${dir}`))
+          .then(files =>
+            Promise.all(
+              files.map(file =>
+                copyFile(`./templates/${dir}/${file}`, `${path}/${dir}/${file}`)
+              )
+            )
+          )
+      )
+    )
+  );
 }
 
 function createEnvFile(path, { accountSid, authToken }) {
@@ -63,7 +73,7 @@ function createNvmrcFile(path) {
 module.exports = {
   createDirectory,
   createPackageJSON,
-  createExampleFunction,
+  createExampleFromTemplates,
   createEnvFile,
   createNvmrcFile
 };

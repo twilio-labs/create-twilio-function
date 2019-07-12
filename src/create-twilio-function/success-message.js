@@ -10,7 +10,7 @@ async function successMessage(config) {
   Inside that directory, you can run the following command:
 
   {blue ${packageManager} start}
-    Serves all functions in the ./functions subdirectory
+    Serves all functions in the ./functions subdirectory and assets in the ./assets directory
 
   Get started by running:
 

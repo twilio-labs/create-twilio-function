@@ -45,15 +45,19 @@ function copyRecursively(src, dest) {
   return readdir(src).then(children => {
     return Promise.all(
       children.map(child =>
-        copyFile(`./${src}/${child}`, `${dest}/${child}`, COPYFILE_EXCL).then(
-          () => {
-            return stat(`${src}/${child}`).then(stat => {
-              if (stat.isDirectory()) {
-                return copyRecursively(`${src}/${child}`, `${dest}/${child}`);
-              }
-            });
+        stat(`${src}/${child}`).then(stat => {
+          if (stat.isDirectory()) {
+            return mkdir(`${dest}/${child}`).then(() =>
+              copyRecursively(`${src}/${child}`, `${dest}/${child}`)
+            );
+          } else {
+            return copyFile(
+              `./${src}/${child}`,
+              `${dest}/${child}`,
+              COPYFILE_EXCL
+            );
           }
-        )
+        })
       )
     );
   });

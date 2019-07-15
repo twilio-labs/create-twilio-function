@@ -1,4 +1,4 @@
-const inquirer = require('inquirer');
+import * as inquirer from 'inquirer';
 
 function validateAccountSid(input) {
   if (input.startsWith('AC') || input === '') {
@@ -8,7 +8,7 @@ function validateAccountSid(input) {
   }
 }
 
-async function promptForAccountDetails(config) {
+export async function promptForAccountDetails(config) {
   if (config.skipCredentials) return {};
   const questions = [];
   if (typeof config.accountSid === 'undefined') {
@@ -30,5 +30,3 @@ async function promptForAccountDetails(config) {
   }
   return await inquirer.prompt(questions);
 }
-
-module.exports = { promptForAccountDetails };

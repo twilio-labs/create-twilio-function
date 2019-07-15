@@ -5,7 +5,8 @@
   "bin": "./bin/create-twilio-function",
   "main": "./src/create-twilio-function.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "build": "tsc"
   },
   "keywords": [
     "twilio",
@@ -23,9 +24,13 @@
   },
   "license": "MIT",
   "devDependencies": {
+    "@types/inquirer": "^6.0.3",
+    "@types/node": "^12.6.2",
+    "@types/yargs": "^13.0.0",
     "jest": "^24.5.0",
     "nock": "^10.0.6",
-    "rimraf": "^2.6.3"
+    "rimraf": "^2.6.3",
+    "typescript": "^3.5.3"
   },
   "dependencies": {
     "boxen": "^3.0.0",

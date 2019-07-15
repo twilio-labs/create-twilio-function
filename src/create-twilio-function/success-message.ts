@@ -1,8 +1,18 @@
-const { getPackageManager } = require('pkg-install');
-const chalk = require('chalk');
+import { getPackageManager } from 'pkg-install';
+import chalk from 'chalk';
 
-async function successMessage(config) {
-  const packageManager = await getPackageManager({ cwd: process.cwd() });
+export default async function successMessage(config) {
+  const packageManager = await getPackageManager({
+    dev: false,
+    exact: false,
+    noSave: false,
+    bundle: false,
+    verbose: false,
+    cwd: process.cwd(),
+    prefer: null,
+    stdio: 'pipe',
+    global: false
+  });
   return chalk`{green Success!}
 
   Created {bold ${config.name}} at ${config.path}
@@ -18,5 +28,3 @@ async function successMessage(config) {
   {blue cd ${config.name}}
   {blue ${packageManager} start}`;
 }
-
-module.exports = successMessage;

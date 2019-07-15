@@ -1,6 +1,9 @@
-const createTwilioFunction = require('./create-twilio-function');
+import { CliInfo } from './types';
+import * as createTwilioFunction from './create-twilio-function';
 
-const cliInfo = {
+export const handler = createTwilioFunction;
+
+export const cliInfo: CliInfo = {
   options: {
     'account-sid': {
       alias: 'a',
@@ -27,8 +30,4 @@ const cliInfo = {
   }
 };
 
-module.exports = {
-  describe: 'Creates a new Twilio Function project',
-  handler: createTwilioFunction,
-  cliInfo: cliInfo
-};
+export const describe = 'Creates a new Twilio Function project';

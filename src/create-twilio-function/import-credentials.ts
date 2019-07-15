@@ -1,6 +1,6 @@
-const inquirer = require('inquirer');
+import * as inquirer from 'inquirer';
 
-async function importCredentials(config) {
+export default async function importCredentials(config) {
   if (
     config.skipCredentials ||
     (typeof process.env.TWILIO_ACCOUNT_SID === 'undefined' &&
@@ -31,5 +31,3 @@ async function importCredentials(config) {
     return {};
   }
 }
-
-module.exports = importCredentials;

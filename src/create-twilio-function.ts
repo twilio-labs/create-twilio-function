@@ -1,21 +1,22 @@
-const { promptForAccountDetails } = require('./create-twilio-function/prompt');
-const {
+import { promptForAccountDetails } from './create-twilio-function/prompt';
+import {
   createDirectory,
   createEnvFile,
   createExampleFromTemplates,
   createPackageJSON,
   createNvmrcFile
-} = require('./create-twilio-function/create-files');
-const createGitignore = require('./create-twilio-function/create-gitignore');
-const importCredentials = require('./create-twilio-function/import-credentials');
-const {
-  installDependencies
-} = require('./create-twilio-function/install-dependencies');
-const successMessage = require('./create-twilio-function/success-message');
-const ora = require('ora');
-const boxen = require('boxen');
+} from './create-twilio-function/create-files';
+import createGitignore from './create-twilio-function/create-gitignore';
+import importCredentials from './create-twilio-function/import-credentials';
+import { installDependencies } from './create-twilio-function/install-dependencies';
+import successMessage from './create-twilio-function/success-message';
+import ora from 'ora';
+import boxen, { BorderStyle } from 'boxen';
+import { Argv } from 'yargs';
 
-async function createTwilioFunction(config) {
+export default async function createTwilioFunction(config: {
+  [key: string]: unknown;
+}): Promise<void> {
   const projectDir = `${config.path}/${config.name}`;
 
   try {
@@ -76,8 +77,9 @@ async function createTwilioFunction(config) {
   // Success message
 
   console.log(
-    boxen(await successMessage(config), { padding: 1, borderStyle: 'round' })
+    boxen(await successMessage(config), {
+      padding: 1,
+      borderStyle: BorderStyle.Round
+    })
   );
 }
-
-module.exports = createTwilioFunction;

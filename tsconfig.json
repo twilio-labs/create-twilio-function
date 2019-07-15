@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "incremental": true,
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "allowJs": true,
+    "target": "es2015",
+    "module": "commonjs",
+    "esModuleInterop": true
+  },
+  "include": ["./src/**/*"]
+}

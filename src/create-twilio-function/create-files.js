@@ -8,9 +8,10 @@ const readdir = promisify(fs.readdir);
 const copyFile = promisify(fs.copyFile);
 const { COPYFILE_EXCL } = fs.constants;
 const stat = promisify(fs.stat);
+const path = require('path');
 
-function createDirectory(path, dirName) {
-  return mkdir(path + '/' + dirName);
+function createDirectory(pathName, dirName) {
+  return mkdir(path.join(pathName, dirName));
 }
 
 function createFile(fullPath, content) {
@@ -19,8 +20,8 @@ function createFile(fullPath, content) {
   });
 }
 
-function createPackageJSON(path, name) {
-  const fullPath = `${path}/package.json`;
+function createPackageJSON(pathName, name) {
+  const fullPath = path.join(pathName, 'package.json');
   const packageJSON = JSON.stringify(
     {
       name: name,
@@ -45,17 +46,17 @@ function copyRecursively(src, dest) {
   return readdir(src).then(children => {
     return Promise.all(
       children.map(child =>
-        stat(`${src}/${child}`).then(stat => {
+        stat(path.join(src, child)).then(stat => {
           if (stat.isDirectory()) {
-            return mkdir(`${dest}/${child}`).then(() =>
-              copyRecursively(`${src}/${child}`, `${dest}/${child}`)
+            return mkdir(path.join(dest, child)).then(() =>
+              copyRecursively(path.join(src, child), path.join(dest, child))
             );
           } else {
             return copyFile(
-              `./${src}/${child}`,
-              `${dest}/${child}`,
+              path.join(src, child),
+              path.join(dest, child),
               COPYFILE_EXCL
-            );
+            ).catch(console.error);
           }
         })
       )
@@ -63,19 +64,22 @@ function copyRecursively(src, dest) {
   });
 }
 
-function createExampleFromTemplates(path) {
-  return copyRecursively('./templates', path);
+function createExampleFromTemplates(pathName) {
+  return copyRecursively(
+    path.join(__dirname, '..', '..', 'templates'),
+    pathName
+  );
 }
 
-function createEnvFile(path, { accountSid, authToken }) {
-  const fullPath = `${path}/.env`;
+function createEnvFile(pathName, { accountSid, authToken }) {
+  const fullPath = path.join(pathName, '.env');
   const content = `ACCOUNT_SID=${accountSid}
 AUTH_TOKEN=${authToken}`;
   return createFile(fullPath, content);
 }
 
-function createNvmrcFile(path) {
-  const fullPath = `${path}/.nvmrc`;
+function createNvmrcFile(pathName) {
+  const fullPath = path.join(pathName, '.nvmrc');
   const content = versions.node;
   return createFile(fullPath, content);
 }

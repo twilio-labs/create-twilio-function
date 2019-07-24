@@ -1,5 +1,6 @@
 const yargs = require('yargs');
 const { handler, describe, cliInfo } = require('./command');
+const listTemplates = require('./commands/list-templates');
 
 function cli(cwd) {
   yargs.help();
@@ -22,6 +23,11 @@ function cli(cwd) {
     },
     argv => handler(argv)
   );
+  yargs.command({
+    command: 'list-templates',
+    desc: 'List the available templates you can create a project with.',
+    handler: argv => listTemplates(argv)
+  });
 
   return yargs;
 }

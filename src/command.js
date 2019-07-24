@@ -23,6 +23,11 @@ const cliInfo = {
         'Import credentials from the environment variables TWILIO_ACCOUNT_SID and TWILIO_AUTH_TOKEN',
       type: 'boolean',
       default: false
+    },
+    template: {
+      describe:
+        'Initialize your new project with a template from github.com/twilio-labs/function-templates',
+      type: 'string'
     }
   }
 };

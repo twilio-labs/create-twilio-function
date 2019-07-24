@@ -14,6 +14,7 @@ const {
 const successMessage = require('./create-twilio-function/success-message');
 const ora = require('ora');
 const boxen = require('boxen');
+const { downloadTemplate } = require('twilio-run/dist/templating/actions');
 
 async function createTwilioFunction(config) {
   const projectDir = `${config.path}/${config.name}`;
@@ -52,14 +53,19 @@ async function createTwilioFunction(config) {
   // Scaffold project
   const spinner = ora();
   spinner.start('Creating project directories and files');
-  // await createDirectory(projectDir, 'functions');
-  // await createDirectory(projectDir, 'assets');
+
   await createEnvFile(projectDir, {
     accountSid: config.accountSid,
     authToken: config.authToken
   });
   await createNvmrcFile(projectDir);
-  await createExampleFromTemplates(projectDir);
+  if (config.template) {
+    await createDirectory(projectDir, 'functions');
+    await createDirectory(projectDir, 'assets');
+    await downloadTemplate(config.template, '', projectDir);
+  } else {
+    await createExampleFromTemplates(projectDir);
+  }
   await createPackageJSON(projectDir, config.name);
   spinner.succeed();
 

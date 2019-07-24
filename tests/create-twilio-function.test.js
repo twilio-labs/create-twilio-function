@@ -4,12 +4,13 @@ const {
 } = require('../src/create-twilio-function/install-dependencies');
 const inquirer = require('inquirer');
 const ora = require('ora');
-const boxen = require('boxen');
+const nock = require('nock');
 const fs = require('fs');
 const { promisify } = require('util');
 const rimraf = promisify(require('rimraf'));
 const mkdir = promisify(fs.mkdir);
 const stat = promisify(fs.stat);
+const readdir = promisify(fs.readdir);
 
 jest.mock('inquirer');
 jest.mock('ora');
@@ -30,6 +31,11 @@ console.log = jest.fn();
 
 beforeAll(async () => {
   await rimraf('./scratch');
+  nock.disableNetConnect();
+});
+
+afterAll(() => {
+  nock.enableNetConnect();
 });
 
 beforeEach(async () => {
@@ -38,10 +44,15 @@ beforeEach(async () => {
 
 afterEach(async () => {
   await rimraf('./scratch');
+  nock.cleanAll();
 });
 
 describe('createTwilioFunction', () => {
-  beforeEach(() => jest.clearAllMocks());
+  beforeEach(() => {
+    nock('https://raw.githubusercontent.com')
+      .get('/github/gitignore/master/Node.gitignore')
+      .reply(200, '*.log\n.env');
+  });
 
   test('it scaffolds a Twilio Function', async () => {
     inquirer.prompt = jest.fn(() =>
@@ -78,6 +89,96 @@ describe('createTwilioFunction', () => {
 
     const asset = await stat(`./scratch/${name}/assets/index.html`);
     expect(asset.isFile());
+
+    expect(installDependencies).toHaveBeenCalledWith(`./scratch/${name}`);
+
+    expect(console.log).toHaveBeenCalledWith('success message');
+  });
+
+  test('it scaffolds a Twilio Function with a template', async () => {
+    inquirer.prompt = jest.fn(() =>
+      Promise.resolve({
+        accountSid: 'test-sid',
+        authToken: 'test-auth-token'
+      })
+    );
+
+    const gitHubAPI = nock('https://api.github.com');
+    gitHubAPI
+      .get('/repos/twilio-labs/function-templates/contents/blank?ref=next')
+      .reply(200, [
+        {
+          name: 'functions'
+        },
+        {
+          name: '.env',
+          download_url:
+            'https://raw.githubusercontent.com/twilio-labs/function-templates/next/blank/.env'
+        }
+      ]);
+    gitHubAPI
+      .get(
+        '/repos/twilio-labs/function-templates/contents/blank/functions?ref=next'
+      )
+      .reply(200, [
+        {
+          name: 'blank.js',
+          download_url:
+            'https://raw.githubusercontent.com/twilio-labs/function-templates/next/blank/functions/blank.js'
+        }
+      ]);
+    const gitHubRaw = nock('https://raw.githubusercontent.com');
+    gitHubRaw
+      .get('/twilio-labs/function-templates/next/blank/functions/blank.js')
+      .reply(
+        200,
+        `exports.handler = function(context, event, callback) {
+  callback(null, {});
+};`
+      );
+    gitHubRaw
+      .get('/github/gitignore/master/Node.gitignore')
+      .reply(200, 'node_modules/');
+    gitHubRaw
+      .get('/twilio-labs/function-templates/next/blank/.env')
+      .reply(200, '');
+
+    const name = 'test-function';
+    await createTwilioFunction({
+      name,
+      path: './scratch',
+      template: 'blank'
+    });
+
+    const dir = await stat(`./scratch/${name}`);
+    expect(dir.isDirectory());
+    const env = await stat(`./scratch/${name}/.env`);
+    expect(env.isFile());
+    const nvmrc = await stat(`./scratch/${name}/.nvmrc`);
+    expect(nvmrc.isFile());
+
+    const packageJSON = await stat(`./scratch/${name}/package.json`);
+    expect(packageJSON.isFile());
+
+    const gitignore = await stat(`./scratch/${name}/.gitignore`);
+    expect(gitignore.isFile());
+
+    const functions = await stat(`./scratch/${name}/functions`);
+    expect(functions.isDirectory());
+
+    const assets = await stat(`./scratch/${name}/assets`);
+    expect(assets.isDirectory());
+
+    const exampleFiles = await readdir(`./scratch/${name}/functions`);
+    expect(exampleFiles).toEqual(
+      expect.not.arrayContaining(['hello-world.js'])
+    );
+
+    const templateFunction = await stat(`./scratch/${name}/functions/blank.js`);
+    expect(templateFunction.isFile());
+
+    const exampleAssets = await readdir(`./scratch/${name}/assets`);
+    expect(exampleAssets).toEqual(expect.not.arrayContaining(['index.html']));
 
     expect(installDependencies).toHaveBeenCalledWith(`./scratch/${name}`);
 

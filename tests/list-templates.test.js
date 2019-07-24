@@ -1,9 +1,29 @@
-const templateActions = require('twilio-run/dist/templating/actions');
 const listTemplates = require('../src/commands/list-templates');
+const ora = require('ora');
+const nock = require('nock');
 
-jest.mock('twilio-run/dist/templating/actions');
+jest.mock('ora');
+ora.mockImplementation(() => {
+  const spinner = {
+    start: () => spinner,
+    stop: () => spinner
+  };
+  return spinner;
+});
+
+beforeAll(() => {
+  nock.disableNetConnect();
+});
+
+afterAll(() => {
+  nock.enableNetConnect();
+});
 
 describe('listTemplates', () => {
+  afterEach(() => {
+    nock.cleanAll();
+  });
+
   it('gets templates from twilio-run and displays them', async () => {
     const consoleSpy = jest
       .spyOn(global.console, 'log')
@@ -13,7 +33,11 @@ describe('listTemplates', () => {
       id: 'test-template',
       description: 'A template to test with'
     };
-    templateActions.fetchListOfTemplates.mockResolvedValue([template]);
+    nock('https://raw.githubusercontent.com')
+      .get('/twilio-labs/function-templates/master/templates.json')
+      .reply(200, {
+        templates: [template]
+      });
 
     await listTemplates();
 

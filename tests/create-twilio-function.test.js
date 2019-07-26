@@ -17,11 +17,14 @@ jest.mock('ora');
 jest.mock('boxen', () => {
   return () => 'success message';
 });
+const spinner = {
+  start: () => spinner,
+  succeed: () => spinner,
+  fail: () => spinner,
+  clear: () => spinner,
+  stop: () => spinner
+};
 ora.mockImplementation(() => {
-  const spinner = {
-    start: () => spinner,
-    succeed: () => spinner
-  };
   return spinner;
 });
 jest.mock('../src/create-twilio-function/install-dependencies.js', () => {
@@ -49,12 +52,6 @@ afterEach(async () => {
 
 describe('createTwilioFunction', () => {
   beforeEach(() => {
-    nock('https://raw.githubusercontent.com')
-      .get('/github/gitignore/master/Node.gitignore')
-      .reply(200, '*.log\n.env');
-  });
-
-  test('it scaffolds a Twilio Function', async () => {
     inquirer.prompt = jest.fn(() =>
       Promise.resolve({
         accountSid: 'test-sid',
@@ -62,6 +59,12 @@ describe('createTwilioFunction', () => {
       })
     );
 
+    nock('https://raw.githubusercontent.com')
+      .get('/github/gitignore/master/Node.gitignore')
+      .reply(200, '*.log\n.env');
+  });
+
+  it('scaffolds a Twilio Function', async () => {
     const name = 'test-function';
     await createTwilioFunction({ name, path: './scratch' });
 
@@ -95,14 +98,7 @@ describe('createTwilioFunction', () => {
     expect(console.log).toHaveBeenCalledWith('success message');
   });
 
-  test('it scaffolds a Twilio Function with a template', async () => {
-    inquirer.prompt = jest.fn(() =>
-      Promise.resolve({
-        accountSid: 'test-sid',
-        authToken: 'test-auth-token'
-      })
-    );
-
+  it('scaffolds a Twilio Function with a template', async () => {
     const gitHubAPI = nock('https://api.github.com');
     gitHubAPI
       .get('/repos/twilio-labs/function-templates/contents/blank?ref=next')
@@ -185,17 +181,48 @@ describe('createTwilioFunction', () => {
     expect(console.log).toHaveBeenCalledWith('success message');
   });
 
+  it('handles a missing template gracefully', async () => {
+    const templateName = 'missing';
+    const name = 'test-function';
+    const gitHubAPI = nock('https://api.github.com');
+    gitHubAPI
+      .get(
+        `/repos/twilio-labs/function-templates/contents/${templateName}?ref=next`
+      )
+      .reply(404);
+
+    const fail = jest.spyOn(spinner, 'fail');
+
+    await createTwilioFunction({
+      name,
+      path: './scratch',
+      template: templateName
+    });
+
+    expect.assertions(3);
+
+    expect(fail).toHaveBeenCalledTimes(1);
+    expect(fail).toHaveBeenCalledWith(
+      `The template "${templateName}" doesn't exist`
+    );
+    try {
+      await stat(`./scratch/${name}`);
+    } catch (e) {
+      expect(e.toString()).toMatch('no such file or directory');
+    }
+  });
+
   it("doesn't scaffold if the target folder name already exists", async () => {
     const name = 'test-function';
     await mkdir('./scratch/test-function');
-    console.error = jest.fn();
+    const fail = jest.spyOn(spinner, 'fail');
 
     await createTwilioFunction({ name, path: './scratch' });
 
     expect.assertions(4);
 
-    expect(console.error).toHaveBeenCalledTimes(1);
-    expect(console.error).toHaveBeenCalledWith(
+    expect(fail).toHaveBeenCalledTimes(1);
+    expect(fail).toHaveBeenCalledWith(
       `A directory called '${name}' already exists. Please create your function in a new directory.`
     );
     expect(console.log).not.toHaveBeenCalled();
@@ -211,14 +238,14 @@ describe('createTwilioFunction', () => {
     const name = 'test-function';
     const chmod = promisify(fs.chmod);
     await chmod('./scratch', 0o555);
-    console.error = jest.fn();
+    const fail = jest.spyOn(spinner, 'fail');
 
     await createTwilioFunction({ name, path: './scratch' });
 
     expect.assertions(4);
 
-    expect(console.error).toHaveBeenCalledTimes(1);
-    expect(console.error).toHaveBeenCalledWith(
+    expect(fail).toHaveBeenCalledTimes(1);
+    expect(fail).toHaveBeenCalledWith(
       `You do not have permission to create files or directories in the path './scratch'.`
     );
     expect(console.log).not.toHaveBeenCalled();

@@ -11,6 +11,7 @@ const rimraf = promisify(require('rimraf'));
 const mkdir = promisify(fs.mkdir);
 const stat = promisify(fs.stat);
 
+jest.mock('window-size', () => ({ get: () => ({ width: 80 }) }));
 jest.mock('inquirer');
 jest.mock('ora');
 jest.mock('boxen', () => {

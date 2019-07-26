@@ -20,7 +20,7 @@ Get started by running:
 
 {blue cd ${config.name}}
 {blue ${packageManager} start}`,
-    windowSize.width - 8,
+    windowSize.get().width - 8,
     { trim: false, hard: true }
   );
 }

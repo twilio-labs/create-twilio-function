@@ -1,5 +1,5 @@
 const yargs = require('yargs');
-const { handler, describe, cliInfo } = require('./command');
+const DefaultCommand = require('./command');
 
 function cli(cwd) {
   yargs.help();
@@ -9,19 +9,8 @@ function cli(cwd) {
 
   yargs.default('path', cwd);
 
-  yargs.usage(describe);
-  yargs.command(
-    '$0 <name>',
-    describe,
-    command => {
-      command.positional('name', {
-        describe: 'Name of your project.',
-        type: 'string'
-      });
-      command.options(cliInfo.options);
-    },
-    argv => handler(argv)
-  );
+  yargs.usage(DefaultCommand.describe);
+  yargs.command(DefaultCommand);
 
   return yargs;
 }

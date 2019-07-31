@@ -6,7 +6,8 @@ jest.mock('ora');
 ora.mockImplementation(() => {
   const spinner = {
     start: () => spinner,
-    stop: () => spinner
+    stop: () => spinner,
+    fail: () => spinner
   };
   return spinner;
 });
@@ -34,7 +35,7 @@ describe('listTemplates', () => {
       description: 'A template to test with'
     };
     nock('https://raw.githubusercontent.com')
-      .get('/twilio-labs/function-templates/master/templates.json')
+      .get('/twilio-labs/function-templates/next/templates.json')
       .reply(200, {
         templates: [template]
       });

@@ -17,8 +17,9 @@ const listTemplates = async function() {
       )
     );
   } catch (err) {
+    console.error(err);
     spinner.fail('Could not retrieve templates');
-    process.exit(1);
+    process.exitCode = 1;
     return;
   }
 };

@@ -4,6 +4,7 @@
 
 - Exports details about the cli command so that other projects can consume it. Fixes #12
 - Generates new project from the ./templates directory in this project
+- Can generate projects based on a template from twilio-labs/function-templates
 
 ## 1.0.2 (July 10, 2019) [☰](https://github.com/twilio-labs/create-twilio-function/compare/v1.0.1...v1.0.2)
 

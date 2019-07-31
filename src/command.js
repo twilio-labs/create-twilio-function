@@ -1,4 +1,7 @@
-const createTwilioFunction = require('./create-twilio-function');
+const handler = require('./create-twilio-function');
+
+const command = '$0 <name>';
+const describe = 'Creates a new Twilio Function project';
 
 const cliInfo = {
   options: {
@@ -32,8 +35,18 @@ const cliInfo = {
   }
 };
 
+const builder = command => {
+  command.positional('name', {
+    describe: 'Name of your project.',
+    type: 'string'
+  });
+  command.options(cliInfo.options);
+};
+
 module.exports = {
-  describe: 'Creates a new Twilio Function project',
-  handler: createTwilioFunction,
-  cliInfo: cliInfo
+  command,
+  describe,
+  handler,
+  cliInfo,
+  builder
 };

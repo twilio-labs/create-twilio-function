@@ -1,6 +1,6 @@
 {
   "name": "create-twilio-function",
-  "version": "2.0.0-alpha.4",
+  "version": "2.0.0-alpha.5",
   "description": "A CLI tool to generate a new Twilio Function using that can be run locally with twilio-run.",
   "bin": "./bin/create-twilio-function",
   "main": "./src/create-twilio-function.js",
@@ -34,8 +34,10 @@
     "ora": "^3.2.0",
     "pkg-install": "^1.0.0",
     "twilio-run": "^2.0.0-beta.12",
-    "yargs": "^12.0.5",
-    "rimraf": "^2.6.3"
+    "rimraf": "^2.6.3",
+    "window-size": "^1.1.1",
+    "wrap-ansi": "^6.0.0",
+    "yargs": "^12.0.5"
   },
   "engines": {
     "node": ">=8.0.0"

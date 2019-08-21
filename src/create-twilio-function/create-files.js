@@ -29,7 +29,8 @@ function createPackageJSON(pathName, name) {
       private: true,
       scripts: {
         test: 'echo "Error: no test specified" && exit 1',
-        start: 'twilio-run --env'
+        start: 'twilio-run --env',
+        deploy: 'twilio-run deploy'
       },
       devDependencies: {
         'twilio-run': versions.twilioRun

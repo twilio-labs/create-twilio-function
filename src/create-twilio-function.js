@@ -1,4 +1,8 @@
-const { promptForAccountDetails } = require('./create-twilio-function/prompt');
+const {
+  promptForAccountDetails,
+  promptForProjectName,
+  nameRegex
+} = require('./create-twilio-function/prompt');
 const {
   createDirectory,
   createEnvFile,
@@ -28,6 +32,10 @@ async function cleanUpAndExit(projectDir, spinner, errorMessage) {
 }
 
 async function createTwilioFunction(config) {
+  if (!config.name.match(nameRegex)) {
+    const { name } = await promptForProjectName();
+    config.name = name;
+  }
   const projectDir = path.join(config.path, config.name);
   const spinner = ora();
 

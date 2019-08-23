@@ -1,8 +1,8 @@
 const {
   promptForAccountDetails,
-  promptForProjectName,
-  nameRegex
+  promptForProjectName
 } = require('./create-twilio-function/prompt');
+const validateProjectName = require('./create-twilio-function/validate-project-name');
 const {
   createDirectory,
   createEnvFile,
@@ -32,8 +32,9 @@ async function cleanUpAndExit(projectDir, spinner, errorMessage) {
 }
 
 async function createTwilioFunction(config) {
-  if (!config.name.match(nameRegex)) {
-    const { name } = await promptForProjectName();
+  const { valid, errors } = validateProjectName(config.name);
+  if (!valid) {
+    const { name } = await promptForProjectName(errors);
     config.name = name;
   }
   const projectDir = path.join(config.path, config.name);

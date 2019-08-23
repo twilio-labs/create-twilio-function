@@ -1,7 +1,6 @@
 const {
   validateAccountSid,
   promptForAccountDetails,
-  validateProjectName,
   promptForProjectName
 } = require('../src/create-twilio-function/prompt');
 const inquirer = require('inquirer');
@@ -76,19 +75,6 @@ describe('promptForAccountDetails', () => {
   });
 });
 
-describe('validating project name', () => {
-  test('a project name can contain capitals, lowercase, numbers and hyphens', () => {
-    expect(validateProjectName('An-ok-ProjectName123')).toBe(true);
-  });
-
-  test('a project name cannot contain anything else', () => {
-    const expectedError = 'Project name has invalid characters.';
-    expect(validateProjectName('not_ok')).toBe(expectedError);
-    expect(validateProjectName('Spaces are not allowed')).toBe(expectedError);
-    expect(validateProjectName('#')).toBe(expectedError);
-  });
-});
-
 describe('promptForProjectName', () => {
   test('should ask for a project name', async () => {
     inquirer.prompt = jest.fn(() =>
@@ -96,7 +82,7 @@ describe('promptForProjectName', () => {
         name: 'test-name'
       })
     );
-    await promptForProjectName();
+    await promptForProjectName(['must be valid']);
     expect(inquirer.prompt).toHaveBeenCalledTimes(1);
     expect(inquirer.prompt).toHaveBeenCalledWith(expect.any(Array));
   });

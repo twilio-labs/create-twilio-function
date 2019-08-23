@@ -1,20 +1,11 @@
 const inquirer = require('inquirer');
+const validateProjectName = require('./validate-project-name');
 
 function validateAccountSid(input) {
   if (input.startsWith('AC') || input === '') {
     return true;
   } else {
     return 'An Account SID starts with "AC".';
-  }
-}
-
-const nameRegex = /^[A-Za-z0-9\-]+$/;
-
-function validateProjectName(input) {
-  if (!input.match(nameRegex)) {
-    return 'Project name has invalid characters.';
-  } else {
-    return true;
   }
 }
 
@@ -39,14 +30,19 @@ async function promptForAccountDetails(config) {
   return await inquirer.prompt(questions);
 }
 
-async function promptForProjectName() {
+async function promptForProjectName(errors) {
   const questions = [
     {
       type: 'input',
       name: 'name',
-      message:
-        'Project names may only include the characters A-Z, a-z, 0-9 and _. Please choose a new project name.',
-      validate: validateProjectName
+      message: `Project names ${errors.join(
+        ', '
+      )}. Please choose a new project name.`,
+      validate: name => {
+        const { valid, errors } = validateProjectName(name);
+        if (valid) return valid;
+        return `Project ${errors.join(', ')}.`;
+      }
     }
   ];
   return await inquirer.prompt(questions);
@@ -55,7 +51,5 @@ async function promptForProjectName() {
 module.exports = {
   promptForAccountDetails,
   promptForProjectName,
-  validateAccountSid,
-  validateProjectName,
-  nameRegex
+  validateAccountSid
 };

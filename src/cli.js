@@ -1,6 +1,12 @@
 const yargs = require('yargs');
 const DefaultCommand = require('./command');
 const ListTemplateCommand = require('twilio-run/dist/commands/list-templates');
+const updateNotifier = require('update-notifier');
+
+const pkg = require('./package.json');
+updateNotifier({
+  pkg
+}).notify();
 
 function cli(cwd) {
   yargs.help();

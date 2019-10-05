@@ -10,11 +10,15 @@ async function successMessage(config) {
 
 Created {bold ${config.name}} at {bold ${config.path}}
 
-Inside that directory, you can run the following command:
+Inside that directory, you can run the following commands:
 
 {blue ${packageManager} start}
   Serves all functions in the ./functions subdirectory and assets in the
   ./assets directory
+
+{blue ${packageManager} test}
+  Tests all functions in the ./functions subdirectory and
+  its subdirectories
 
 Get started by running:
 

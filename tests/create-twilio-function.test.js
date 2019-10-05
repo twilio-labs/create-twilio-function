@@ -83,6 +83,9 @@ describe('createTwilioFunction', () => {
       const gitignore = await stat(`./scratch/${name}/.gitignore`);
       expect(gitignore.isFile());
 
+      const jestSetup = await stat(`./scratch/${name}/jest.setup.js`);
+      expect(jestSetup.isFile());
+
       const functions = await stat(`./scratch/${name}/functions`);
       expect(functions.isDirectory());
 
@@ -91,6 +94,9 @@ describe('createTwilioFunction', () => {
 
       const example = await stat(`./scratch/${name}/functions/hello-world.js`);
       expect(example.isFile());
+
+      const exampleTest = await stat(`./scratch/${name}/functions/hello-world.test.js`);
+      expect(exampleTest.isFile());
 
       const asset = await stat(`./scratch/${name}/assets/index.html`);
       expect(asset.isFile());
@@ -159,6 +165,9 @@ describe('createTwilioFunction', () => {
       const gitignore = await stat(`./scratch/${name}/.gitignore`);
       expect(gitignore.isFile());
 
+      const jestSetup = await stat(`./scratch/${name}/jest.setup.js`);
+      expect(jestSetup.isFile());
+
       const functions = await stat(`./scratch/${name}/functions`);
       expect(functions.isDirectory());
 
@@ -174,6 +183,11 @@ describe('createTwilioFunction', () => {
         `./scratch/${name}/functions/blank.js`
       );
       expect(templateFunction.isFile());
+
+      const templateFunctionTest = await stat(
+        `./scratch/${name}/functions/blank.test.js`
+      );
+      expect(templateFunctionTest.isFile());
 
       const exampleAssets = await readdir(`./scratch/${name}/assets`);
       expect(exampleAssets).toEqual(expect.not.arrayContaining(['index.html']));
@@ -297,6 +311,9 @@ describe('createTwilioFunction', () => {
       const gitignore = await stat(`./scratch/${name}/.gitignore`);
       expect(gitignore.isFile());
 
+      const jestSetup = await stat(`./scratch/${name}/jest.setup.js`);
+      expect(jestSetup.isFile());
+
       const functions = await stat(`./scratch/${name}/functions`);
       expect(functions.isDirectory());
 
@@ -305,6 +322,9 @@ describe('createTwilioFunction', () => {
 
       const example = await stat(`./scratch/${name}/functions/hello-world.js`);
       expect(example.isFile());
+
+      const exampleTest = await stat(`./scratch/${name}/functions/hello-world.test.js`);
+      expect(exampleTest.isFile());
 
       const asset = await stat(`./scratch/${name}/assets/index.html`);
       expect(asset.isFile());

@@ -41,7 +41,7 @@ async function createTwilioFunction(config) {
   }
   const projectDir = path.join(config.path, config.name);
   const spinner = ora();
-  
+
   try {
     spinner.start('Creating project directory');
     await createDirectory(config.path, config.name);
@@ -100,7 +100,6 @@ async function createTwilioFunction(config) {
       );
       return;
     }
-    
   } else {
     await createExample(projectDir);
   }

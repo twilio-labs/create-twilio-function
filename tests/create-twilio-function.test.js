@@ -11,6 +11,7 @@ const rimraf = promisify(require('rimraf'));
 const mkdir = promisify(fs.mkdir);
 const stat = promisify(fs.stat);
 const readdir = promisify(fs.readdir);
+const path = require('path');
 
 jest.mock('window-size', () => ({ get: () => ({ width: 80 }) }));
 jest.mock('inquirer');
@@ -95,7 +96,8 @@ describe('createTwilioFunction', () => {
       const asset = await stat(`./scratch/${name}/assets/index.html`);
       expect(asset.isFile());
 
-      expect(installDependencies).toHaveBeenCalledWith(`scratch/${name}`);
+      const expected = path.join('scratch', name);
+      expect(installDependencies).toHaveBeenCalledWith(expected);
 
       expect(console.log).toHaveBeenCalledWith('success message');
     });
@@ -178,7 +180,8 @@ describe('createTwilioFunction', () => {
       const exampleAssets = await readdir(`./scratch/${name}/assets`);
       expect(exampleAssets).toEqual(expect.not.arrayContaining(['index.html']));
 
-      expect(installDependencies).toHaveBeenCalledWith(`scratch/${name}`);
+      const expected = path.join('scratch', name);
+      expect(installDependencies).toHaveBeenCalledWith(expected);
 
       expect(console.log).toHaveBeenCalledWith('success message');
     });
@@ -309,7 +312,8 @@ describe('createTwilioFunction', () => {
       const asset = await stat(`./scratch/${name}/assets/index.html`);
       expect(asset.isFile());
 
-      expect(installDependencies).toHaveBeenCalledWith(`scratch/${name}`);
+      const expected = path.join('scratch', name);
+      expect(installDependencies).toHaveBeenCalledWith(expected);
 
       expect(console.log).toHaveBeenCalledWith('success message');
     });

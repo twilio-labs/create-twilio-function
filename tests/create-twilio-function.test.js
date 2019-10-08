@@ -238,6 +238,11 @@ describe('createTwilioFunction', () => {
     });
 
     it("fails gracefully if it doesn't have permission to create directories", async () => {
+      // chmod with 0o555 does not work on Windows.
+      if (process.platform === 'win32') {
+        return;
+      }
+
       const name = 'test-function';
       const chmod = promisify(fs.chmod);
       await chmod('./scratch', 0o555);

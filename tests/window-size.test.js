@@ -1,13 +1,13 @@
 const getWindowSize = require('../src/create-twilio-function/window-size');
 
 jest.mock('window-size', () => ({ get: jest
-    .fn()
-    .mockReturnValueOnce({ width: 40, height: 100 })
-    .mockReturnValueOnce()
-    .mockReturnValueOnce({ height: 250 })
-    .mockReturnValueOnce({ width: 50 })
-    .mockReturnValueOnce({ width: 80, height: 300 })
-    }));
+  .fn()
+  .mockReturnValueOnce({ width: 40, height: 100 })
+  .mockReturnValueOnce()
+  .mockReturnValueOnce({ height: 250 })
+  .mockReturnValueOnce({ width: 50 })
+  .mockReturnValueOnce({ width: 80, height: 300 })
+}));
 
 describe('getWindowSize', () => {
   it('gets a valid windowSize', () => {

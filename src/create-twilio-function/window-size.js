@@ -7,9 +7,9 @@ function getWindowSize() {
   if (!currentSize) {
     return defaultSize;
   }
-  
-  if(!currentSize.width) currentSize.width = defaultSize.width;
-  if(!currentSize.height) currentSize.height = defaultSize.height;
+
+  if (!currentSize.width) currentSize.width = defaultSize.width;
+  if (!currentSize.height) currentSize.height = defaultSize.height;
   return currentSize;
 }
 

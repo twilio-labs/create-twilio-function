@@ -26,7 +26,7 @@ async function promptForAccountDetails(config) {
       message: 'Twilio auth token'
     });
   }
-  return await inquirer.prompt(questions);
+  return inquirer.prompt(questions);
 }
 
 async function promptForProjectName(errors) {
@@ -44,7 +44,7 @@ async function promptForProjectName(errors) {
       }
     }
   ];
-  return await inquirer.prompt(questions);
+  return inquirer.prompt(questions);
 }
 
 module.exports = {

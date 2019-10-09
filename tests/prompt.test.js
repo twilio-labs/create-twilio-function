@@ -22,7 +22,7 @@ describe('accountSid validation', () => {
 });
 
 describe('promptForAccountDetails', () => {
-  test(`should ask for an accountSid if not specified`, async () => {
+  test('should ask for an accountSid if not specified', async () => {
     inquirer.prompt = jest.fn(() =>
       Promise.resolve({
         accountSid: 'AC1234',
@@ -36,7 +36,7 @@ describe('promptForAccountDetails', () => {
     expect(inquirer.prompt).toHaveBeenCalledWith(expect.any(Array));
   });
 
-  test(`should ask for an auth if not specified`, async () => {
+  test('should ask for an auth if not specified', async () => {
     inquirer.prompt = jest.fn(() =>
       Promise.resolve({
         authToken: 'test-auth-token'
@@ -50,7 +50,7 @@ describe('promptForAccountDetails', () => {
     expect(inquirer.prompt).toHaveBeenCalledWith(expect.any(Array));
   });
 
-  test(`should not prompt if account sid and auth token specified`, async () => {
+  test('should not prompt if account sid and auth token specified', async () => {
     inquirer.prompt = jest.fn(() =>
       Promise.resolve({
         accountSid: 'AC1234',

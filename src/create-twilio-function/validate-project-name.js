@@ -21,7 +21,7 @@ function validateProjectName(name) {
 }
 
 function assertContainsLettersNumbersHyphens(name) {
-  const nameRegex = /^[A-Za-z0-9\-]+$/;
+  const nameRegex = /^[A-Za-z0-9-]+$/;
   return !!name.match(nameRegex);
 }
 

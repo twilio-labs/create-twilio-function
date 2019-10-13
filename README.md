@@ -1,12 +1,12 @@
 # `create-twilio-function`
 
-A command line tool to setup a new [Twilio Function](https://www.twilio.com/docs/api/runtime/functions) with local testing using [`twilio-run`](https://github.com/twilio-labs/twilio-run).
+एक नया स्थापित करने के लिए एक कमांड लाइन उपकरण [Twilio Function](https://www.twilio.com/docs/api/runtime/functions) स्थानीय परीक्षण का उपयोग करके [`twilio-run`](https://github.com/twilio-labs/twilio-run).
 
 [![Build Status](https://travis-ci.com/twilio-labs/create-twilio-function.svg?branch=master)](https://travis-ci.com/twilio-labs/create-twilio-function) [![Maintainability](https://api.codeclimate.com/v1/badges/e6f9eb67589927df5d72/maintainability)](https://codeclimate.com/github/twilio-labs/create-twilio-function/maintainability)
 
-## Usage
+## प्रयोग
 
-There are a number of ways to use this tool. The quickest and easiest is with `npm init`:
+इस उपकरण का उपयोग करने के कई तरीके हैं। सबसे तेज और आसान `npm init` के साथ है:
 
 ```bash
 npm init twilio-function function-name
@@ -14,29 +14,29 @@ cd function-name
 npm start
 ```
 
-This will create a new directory named "function-name" and include all the files you need to write and run a Twilio Function locally. Starting the application will host the example function at localhost:3000/example.
+यह "फंक्शन-नेम" नाम से एक नई डायरेक्टरी बनाएगा और इसमें उन सभी फाइलों को शामिल किया जाएगा जिन्हें स्थानीय स्तर पर ट्विलियो फंक्शन लिखने और चलाने की जरूरत है। Sएप्लिकेशन शुरू करने से स्थानीय होस्ट पर उदाहरण फ़ंक्शन की मेजबानी होगी: 3000 / उदाहरण।
 
-### Alternatives
+### वैकल्पिक
 
-You can also use `npx` to run `create-twilio-function`:
+आप `create-twilio-function` को चलाने के लिए` npm` का भी उपयोग कर सकते हैं।:
 
 ```bash
 npx create-twilio-function function-name
 ```
 
-Or you can install the module globally:
+या आप विश्व स्तर पर मॉड्यूल स्थापित कर सकते हैं:
 
 ```bash
 npm install create-twilio-function -g
 create-twilio-function function-name
 ```
 
-## Command line arguments
+## कमांड लाइन तर्क
 
 ```
 create-twilio-function <name>
 
-Creates a new Twilio Function project
+एक नया टिलिओ फंक्शन प्रोजेक्ट बनाता है
 
 Commands:
   create-twilio-function <name>          Creates a new Twilio Function
@@ -62,33 +62,33 @@ Options:
   --path                                                     [default: (cwd)]
 ```
 
-## Contributing
+## योगदान
 
-Any help contributing to this project is welcomed. Make sure you read and agree with the [code of conduct](CODE_OF_CONDUCT.md).
+इस परियोजना में योगदान देने वाली किसी भी मदद का स्वागत किया जाता है।सुनिश्चित करें कि आप [आचार संहिता] (CODE_OF_CONDUCT.md) से पढ़ते हैं और सहमत होते हैं।
 
-1. Fork the project
-2. Clone the fork like so:
+1. प्रोजैक्ट को Fork करें|
+2. Fork को इस प्रकार Clone करें:
 
 ```bash
 git clone git@github.com:YOUR_USERNAME/create-twilio-function.git
 ```
 
-3. Install the dependencies
+3. निर्भरता स्थापित करें
 
 ```bash
 cd create-twilio-function
 npm install
 ```
 
-4. Make your changes
-5. Test your changes with
+4. अपने बदलाव करें
+5. अपने परिवर्तनों का परीक्षण इस प्रकार करें:
 
 ```bash
 npm test
 ```
 
-6. Commit your changes and open a pull request
+6. अपने परिवर्तन करें और एक पुल अनुरोध खोलें
 
-## LICENSE
+## लाइसेंस
 
 MIT

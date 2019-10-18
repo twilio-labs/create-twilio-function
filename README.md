@@ -91,4 +91,4 @@ npm test
 
 ## LICENSE
 
-MIT
+MIT, Cambridge, MA

@@ -81,3 +81,6 @@ typings/
 
 # Package locks
 package-lock.json
+
+# MacOS directory cache
+.DS_Store

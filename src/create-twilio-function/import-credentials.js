@@ -30,8 +30,8 @@ async function importCredentials(config) {
     return credentials;
   }
 
-  const { result } = await inquirer.prompt(questions);
-  return result ? credentials : {};
+  const { importCredentials } = await inquirer.prompt(questions);
+  return importCredentials ? credentials : {};
 }
 
 module.exports = importCredentials;

@@ -35,7 +35,7 @@ const cliInfo = {
   },
 };
 
-const builder = command => {
+function builder(command) {
   command.positional('name', {
     describe: 'Name of your project.',
     type: 'string',

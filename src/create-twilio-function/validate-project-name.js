@@ -1,3 +1,20 @@
+function assertContainsLettersNumbersHyphens(name) {
+  const nameRegex = /^[A-Za-z0-9-]+$/;
+  return Boolean(name.match(nameRegex));
+}
+
+function assertDoesntStartWithHyphen(name) {
+  return !name.startsWith('-');
+}
+
+function assertDoesntEndWithHyphen(name) {
+  return !name.endsWith('-');
+}
+
+function assertNotLongerThan(name, chars = 32) {
+  return name.length <= chars;
+}
+
 function validateProjectName(name) {
   let valid = true;
   const errors = [];
@@ -19,25 +36,8 @@ function validateProjectName(name) {
   }
   return {
     valid,
-    errors, 
+    errors,
   };
-}
-
-function assertContainsLettersNumbersHyphens(name) {
-  const nameRegex = /^[A-Za-z0-9-]+$/;
-  return Boolean(name.match(nameRegex));
-}
-
-function assertDoesntStartWithHyphen(name) {
-  return !name.startsWith('-');
-}
-
-function assertDoesntEndWithHyphen(name) {
-  return !name.endsWith('-');
-}
-
-function assertNotLongerThan(name, chars = 32) {
-  return name.length <= chars;
 }
 
 module.exports = validateProjectName;

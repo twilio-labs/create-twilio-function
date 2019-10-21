@@ -1,7 +1,5 @@
 const createTwilioFunction = require('../src/create-twilio-function');
-const {
-  installDependencies
-} = require('../src/create-twilio-function/install-dependencies');
+const { installDependencies } = require('../src/create-twilio-function/install-dependencies');
 const inquirer = require('inquirer');
 const ora = require('ora');
 const nock = require('nock');
@@ -24,7 +22,7 @@ const spinner = {
   succeed: () => spinner,
   fail: () => spinner,
   clear: () => spinner,
-  stop: () => spinner
+  stop: () => spinner,
 };
 ora.mockImplementation(() => {
   return spinner;
@@ -57,12 +55,10 @@ describe('createTwilioFunction', () => {
 
   describe('with an acceptable project name', () => {
     beforeEach(() => {
-      inquirer.prompt = jest.fn(() =>
-        Promise.resolve({
-          accountSid: 'test-sid',
-          authToken: 'test-auth-token'
-        })
-      );
+      inquirer.prompt = jest.fn(() => Promise.resolve({
+        accountSid: 'test-sid',
+        authToken: 'test-auth-token',
+      }));
 
       nock('https://raw.githubusercontent.com')
         .get('/github/gitignore/master/Node.gitignore')
@@ -71,7 +67,10 @@ describe('createTwilioFunction', () => {
 
     it('scaffolds a Twilio Function', async () => {
       const name = 'test-function';
-      await createTwilioFunction({ name, path: scratchDir });
+      await createTwilioFunction({
+        name,
+        path: scratchDir,
+      });
 
       const dir = await stat(path.join(scratchDir, name));
       expect(dir.isDirectory());
@@ -80,9 +79,7 @@ describe('createTwilioFunction', () => {
       const nvmrc = await stat(path.join(scratchDir, name, '.nvmrc'));
       expect(nvmrc.isFile());
 
-      const packageJSON = await stat(
-        path.join(scratchDir, name, 'package.json')
-      );
+      const packageJSON = await stat(path.join(scratchDir, name, 'package.json'));
       expect(packageJSON.isFile());
 
       const gitignore = await stat(path.join(scratchDir, name, '.gitignore'));
@@ -94,19 +91,13 @@ describe('createTwilioFunction', () => {
       const assets = await stat(path.join(scratchDir, name, 'assets'));
       expect(assets.isDirectory());
 
-      const example = await stat(
-        path.join(scratchDir, name, 'functions', 'hello-world.js')
-      );
+      const example = await stat(path.join(scratchDir, name, 'functions', 'hello-world.js'));
       expect(example.isFile());
 
-      const asset = await stat(
-        path.join(scratchDir, name, 'assets', 'index.html')
-      );
+      const asset = await stat(path.join(scratchDir, name, 'assets', 'index.html'));
       expect(asset.isFile());
 
-      expect(installDependencies).toHaveBeenCalledWith(
-        path.join(scratchDir, name)
-      );
+      expect(installDependencies).toHaveBeenCalledWith(path.join(scratchDir, name));
 
       expect(console.log).toHaveBeenCalledWith('success message');
     });
@@ -116,14 +107,12 @@ describe('createTwilioFunction', () => {
       gitHubAPI
         .get('/repos/twilio-labs/function-templates/contents/blank')
         .reply(200, [
-          {
-            name: 'functions'
-          },
+          { name: 'functions' },
           {
             name: '.env',
             download_url:
-              'https://raw.githubusercontent.com/twilio-labs/function-templates/master/blank/.env'
-          }
+              'https://raw.githubusercontent.com/twilio-labs/function-templates/master/blank/.env',
+          },
         ]);
       gitHubAPI
         .get('/repos/twilio-labs/function-templates/contents/blank/functions')
@@ -131,8 +120,8 @@ describe('createTwilioFunction', () => {
           {
             name: 'blank.js',
             download_url:
-              'https://raw.githubusercontent.com/twilio-labs/function-templates/master/blank/functions/blank.js'
-          }
+              'https://raw.githubusercontent.com/twilio-labs/function-templates/master/blank/functions/blank.js',
+          },
         ]);
       const gitHubRaw = nock('https://raw.githubusercontent.com');
       gitHubRaw
@@ -154,7 +143,7 @@ describe('createTwilioFunction', () => {
       await createTwilioFunction({
         name,
         path: scratchDir,
-        template: 'blank'
+        template: 'blank',
       });
       const dir = await stat(path.join(scratchDir, name));
       expect(dir.isDirectory());
@@ -163,9 +152,7 @@ describe('createTwilioFunction', () => {
       const nvmrc = await stat(path.join(scratchDir, name, '.nvmrc'));
       expect(nvmrc.isFile());
 
-      const packageJSON = await stat(
-        path.join(scratchDir, name, 'package.json')
-      );
+      const packageJSON = await stat(path.join(scratchDir, name, 'package.json'));
       expect(packageJSON.isFile());
 
       const gitignore = await stat(path.join(scratchDir, name, '.gitignore'));
@@ -177,26 +164,16 @@ describe('createTwilioFunction', () => {
       const assets = await stat(path.join(scratchDir, name, 'assets'));
       expect(assets.isDirectory());
 
-      const exampleFiles = await readdir(
-        path.join(scratchDir, name, 'functions')
-      );
-      expect(exampleFiles).toEqual(
-        expect.not.arrayContaining(['hello-world.js'])
-      );
+      const exampleFiles = await readdir(path.join(scratchDir, name, 'functions'));
+      expect(exampleFiles).toEqual(expect.not.arrayContaining(['hello-world.js']));
 
-      const templateFunction = await stat(
-        path.join(scratchDir, name, 'functions', 'blank.js')
-      );
+      const templateFunction = await stat(path.join(scratchDir, name, 'functions', 'blank.js'));
       expect(templateFunction.isFile());
 
-      const exampleAssets = await readdir(
-        path.join(scratchDir, name, 'assets')
-      );
+      const exampleAssets = await readdir(path.join(scratchDir, name, 'assets'));
       expect(exampleAssets).toEqual(expect.not.arrayContaining(['index.html']));
 
-      expect(installDependencies).toHaveBeenCalledWith(
-        path.join(scratchDir, name)
-      );
+      expect(installDependencies).toHaveBeenCalledWith(path.join(scratchDir, name));
 
       expect(console.log).toHaveBeenCalledWith('success message');
     });
@@ -214,15 +191,13 @@ describe('createTwilioFunction', () => {
       await createTwilioFunction({
         name,
         path: scratchDir,
-        template: templateName
+        template: templateName,
       });
 
       expect.assertions(3);
 
       expect(fail).toHaveBeenCalledTimes(1);
-      expect(fail).toHaveBeenCalledWith(
-        `The template "${templateName}" doesn't exist`
-      );
+      expect(fail).toHaveBeenCalledWith(`The template "${templateName}" doesn't exist`);
       try {
         await stat(path.join(scratchDir, name));
       } catch (e) {
@@ -235,14 +210,15 @@ describe('createTwilioFunction', () => {
       await mkdir(path.join(scratchDir, name));
       const fail = jest.spyOn(spinner, 'fail');
 
-      await createTwilioFunction({ name, path: scratchDir });
+      await createTwilioFunction({
+        name,
+        path: scratchDir,
+      });
 
       expect.assertions(4);
 
       expect(fail).toHaveBeenCalledTimes(1);
-      expect(fail).toHaveBeenCalledWith(
-        `A directory called '${name}' already exists. Please create your function in a new directory.`
-      );
+      expect(fail).toHaveBeenCalledWith(`A directory called '${name}' already exists. Please create your function in a new directory.`);
       expect(console.log).not.toHaveBeenCalled();
 
       try {
@@ -263,14 +239,15 @@ describe('createTwilioFunction', () => {
       await chmod(scratchDir, 0o555);
       const fail = jest.spyOn(spinner, 'fail');
 
-      await createTwilioFunction({ name, path: scratchDir });
+      await createTwilioFunction({
+        name,
+        path: scratchDir,
+      });
 
       expect.assertions(4);
 
       expect(fail).toHaveBeenCalledTimes(1);
-      expect(fail).toHaveBeenCalledWith(
-        `You do not have permission to create files or directories in the path '${scratchDir}'.`
-      );
+      expect(fail).toHaveBeenCalledWith(`You do not have permission to create files or directories in the path '${scratchDir}'.`);
       expect(console.log).not.toHaveBeenCalled();
 
       try {
@@ -285,17 +262,11 @@ describe('createTwilioFunction', () => {
     beforeEach(() => {
       inquirer.prompt = jest.fn();
       inquirer.prompt
-        .mockReturnValueOnce(
-          Promise.resolve({
-            name: 'test-function'
-          })
-        )
-        .mockReturnValueOnce(
-          Promise.resolve({
-            accountSid: 'test-sid',
-            authToken: 'test-auth-token'
-          })
-        );
+        .mockReturnValueOnce(Promise.resolve({ name: 'test-function' }))
+        .mockReturnValueOnce(Promise.resolve({
+          accountSid: 'test-sid',
+          authToken: 'test-auth-token',
+        }));
 
       nock('https://raw.githubusercontent.com')
         .get('/github/gitignore/master/Node.gitignore')
@@ -305,7 +276,10 @@ describe('createTwilioFunction', () => {
     it('scaffolds a Twilio Function and prompts for a new name', async () => {
       const badName = 'GreatTest!!!';
       const name = 'test-function';
-      await createTwilioFunction({ name: badName, path: scratchDir });
+      await createTwilioFunction({
+        name: badName,
+        path: scratchDir,
+      });
 
       const dir = await stat(path.join(scratchDir, name));
       expect(dir.isDirectory());
@@ -314,9 +288,7 @@ describe('createTwilioFunction', () => {
       const nvmrc = await stat(path.join(scratchDir, name, '.nvmrc'));
       expect(nvmrc.isFile());
 
-      const packageJSON = await stat(
-        path.join(scratchDir, name, 'package.json')
-      );
+      const packageJSON = await stat(path.join(scratchDir, name, 'package.json'));
       expect(packageJSON.isFile());
 
       const gitignore = await stat(path.join(scratchDir, name, '.gitignore'));
@@ -328,19 +300,13 @@ describe('createTwilioFunction', () => {
       const assets = await stat(path.join(scratchDir, name, 'assets'));
       expect(assets.isDirectory());
 
-      const example = await stat(
-        path.join(scratchDir, name, 'functions', 'hello-world.js')
-      );
+      const example = await stat(path.join(scratchDir, name, 'functions', 'hello-world.js'));
       expect(example.isFile());
 
-      const asset = await stat(
-        path.join(scratchDir, name, 'assets', 'index.html')
-      );
+      const asset = await stat(path.join(scratchDir, name, 'assets', 'index.html'));
       expect(asset.isFile());
 
-      expect(installDependencies).toHaveBeenCalledWith(
-        path.join(scratchDir, name)
-      );
+      expect(installDependencies).toHaveBeenCalledWith(path.join(scratchDir, name));
 
       expect(console.log).toHaveBeenCalledWith('success message');
     });

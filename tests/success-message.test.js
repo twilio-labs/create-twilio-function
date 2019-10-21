@@ -10,14 +10,10 @@ describe('successMessage', () => {
     pkgInstall.getPackageManager.mockResolvedValue('yarn');
     const config = {
       name: 'test-function',
-      path: './test-path'
+      path: './test-path',
     };
     const message = await successMessage(config);
     expect(message).toEqual(expect.stringContaining('yarn start'));
-    expect(message).toEqual(
-      expect.stringContaining(
-        chalk`Created {bold ${config.name}} at {bold ${config.path}}`
-      )
-    );
+    expect(message).toEqual(expect.stringContaining(chalk`Created {bold ${config.name}} at {bold ${config.path}}`));
   });
 });

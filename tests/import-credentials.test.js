@@ -12,11 +12,7 @@ describe('importCredentials', () => {
       process.env.TWILIO_ACCOUNT_SID = 'AC1234';
       process.env.TWILIO_AUTH_TOKEN = 'auth-token';
 
-      inquirer.prompt = jest.fn(() =>
-        Promise.resolve({
-          importCredentials: true
-        })
-      );
+      inquirer.prompt = jest.fn(() => Promise.resolve({ importCredentials: true }));
 
       const credentials = await importCredentials({});
       expect(inquirer.prompt).toHaveBeenCalledTimes(1);
@@ -29,11 +25,7 @@ describe('importCredentials', () => {
       process.env.TWILIO_ACCOUNT_SID = 'AC1234';
       process.env.TWILIO_AUTH_TOKEN = 'auth-token';
 
-      inquirer.prompt = jest.fn(() =>
-        Promise.resolve({
-          importCredentials: false
-        })
-      );
+      inquirer.prompt = jest.fn(() => Promise.resolve({ importCredentials: false }));
 
       const credentials = await importCredentials({});
       expect(inquirer.prompt).toHaveBeenCalledTimes(1);
@@ -58,7 +50,7 @@ describe('importCredentials', () => {
 
       const credentials = await importCredentials({
         skipCredentials: true,
-        importCredentials: true
+        importCredentials: true,
       });
       expect(inquirer.prompt).not.toHaveBeenCalled();
       expect(credentials.accountSid).toBe(undefined);

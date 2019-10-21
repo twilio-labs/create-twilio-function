@@ -17,12 +17,15 @@ function validateProjectName(name) {
     valid = false;
     errors.push('must not end with a hyphen');
   }
-  return { valid, errors };
+  return {
+    valid,
+    errors, 
+  };
 }
 
 function assertContainsLettersNumbersHyphens(name) {
   const nameRegex = /^[A-Za-z0-9-]+$/;
-  return !!name.match(nameRegex);
+  return Boolean(name.match(nameRegex));
 }
 
 function assertDoesntStartWithHyphen(name) {

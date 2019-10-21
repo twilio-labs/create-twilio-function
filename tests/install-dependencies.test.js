@@ -1,7 +1,5 @@
 const pkgInstall = require('pkg-install');
-const {
-  installDependencies
-} = require('../src/create-twilio-function/install-dependencies');
+const { installDependencies } = require('../src/create-twilio-function/install-dependencies');
 const path = require('path');
 
 const scratchDir = path.join(process.cwd(), 'scratch');
@@ -14,8 +12,6 @@ describe('installDependencies', () => {
 
     await installDependencies(scratchDir);
 
-    expect(pkgInstall.projectInstall).toHaveBeenCalledWith({
-      cwd: scratchDir
-    });
+    expect(pkgInstall.projectInstall).toHaveBeenCalledWith({ cwd: scratchDir });
   });
 });

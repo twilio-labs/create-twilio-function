@@ -1,6 +1,6 @@
 const {
   promptForAccountDetails,
-  promptForProjectName
+  promptForProjectName,
 } = require('./create-twilio-function/prompt');
 const validateProjectName = require('./create-twilio-function/validate-project-name');
 const {
@@ -8,13 +8,11 @@ const {
   createEnvFile,
   createExampleFromTemplates,
   createPackageJSON,
-  createNvmrcFile
+  createNvmrcFile,
 } = require('./create-twilio-function/create-files');
 const createGitignore = require('./create-twilio-function/create-gitignore');
 const importCredentials = require('./create-twilio-function/import-credentials');
-const {
-  installDependencies
-} = require('./create-twilio-function/install-dependencies');
+const { installDependencies } = require('./create-twilio-function/install-dependencies');
 const successMessage = require('./create-twilio-function/success-message');
 const ora = require('ora');
 const boxen = require('boxen');
@@ -32,7 +30,10 @@ async function cleanUpAndExit(projectDir, spinner, errorMessage) {
 }
 
 async function createTwilioFunction(config) {
-  const { valid, errors } = validateProjectName(config.name);
+  const {
+    valid,
+    errors,
+  } = validateProjectName(config.name);
   if (!valid) {
     const { name } = await promptForProjectName(errors);
     config.name = name;
@@ -46,18 +47,14 @@ async function createTwilioFunction(config) {
     spinner.succeed();
   } catch (e) {
     switch (e.code) {
-      case 'EEXIST':
-        spinner.fail(
-          `A directory called '${config.name}' already exists. Please create your function in a new directory.`
-        );
-        break;
-      case 'EACCES':
-        spinner.fail(
-          `You do not have permission to create files or directories in the path '${config.path}'.`
-        );
-        break;
-      default:
-        spinner.fail(e.message);
+    case 'EEXIST':
+      spinner.fail(`A directory called '${config.name}' already exists. Please create your function in a new directory.`);
+      break;
+    case 'EACCES':
+      spinner.fail(`You do not have permission to create files or directories in the path '${config.path}'.`);
+      break;
+    default:
+      spinner.fail(e.message);
     }
     process.exitCode = 1;
     return;
@@ -68,14 +65,17 @@ async function createTwilioFunction(config) {
   if (Object.keys(accountDetails).length === 0) {
     accountDetails = await promptForAccountDetails(config);
   }
-  config = { ...accountDetails, ...config };
+  config = {
+    ...accountDetails,
+    ...config, 
+  };
 
   // Scaffold project
   spinner.start('Creating project directories and files');
 
   await createEnvFile(projectDir, {
     accountSid: config.accountSid,
-    authToken: config.authToken
+    authToken: config.authToken,
   });
   await createNvmrcFile(projectDir);
   await createPackageJSON(projectDir, config.name);
@@ -117,16 +117,15 @@ async function createTwilioFunction(config) {
     spinner.succeed();
   } catch (err) {
     spinner.fail();
-    console.log(
-      `There was an error installing the dependencies, but your project is otherwise complete in ./${config.name}`
-    );
+    console.log(`There was an error installing the dependencies, but your project is otherwise complete in ./${config.name}`);
   }
 
   // Success message
 
-  console.log(
-    boxen(await successMessage(config), { padding: 1, borderStyle: 'round' })
-  );
+  console.log(boxen(await successMessage(config), {
+    padding: 1,
+    borderStyle: 'round', 
+  }));
 }
 
 module.exports = createTwilioFunction;

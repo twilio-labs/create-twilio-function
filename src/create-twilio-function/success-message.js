@@ -21,7 +21,10 @@ Get started by running:
 {blue cd ${config.name}}
 {blue ${packageManager} start}`,
     getWindowSize().width - 8,
-    { trim: false, hard: true }
+    {
+      trim: false,
+      hard: true, 
+    }
   );
 }
 

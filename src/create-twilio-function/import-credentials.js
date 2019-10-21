@@ -6,20 +6,22 @@ const questions = [
     name: 'importCredentials',
     message:
       'Your account credentials have been found in your environment variables. Import them?',
-    default: true
-  }
+    default: true,
+  },
 ];
 
 async function importCredentials(config) {
-  if (config.skipCredentials) return {};
+  if (config.skipCredentials) {
+    return {};
+  }
 
   const credentials = {
     accountSid: process.env.TWILIO_ACCOUNT_SID,
-    authToken: process.env.TWILIO_AUTH_TOKEN
+    authToken: process.env.TWILIO_AUTH_TOKEN,
   };
   if (
-    typeof credentials.accountSid === 'undefined' &&
-    typeof credentials.authToken === 'undefined'
+    typeof credentials.accountSid === 'undefined'
+    && typeof credentials.authToken === 'undefined'
   ) {
     return {};
   }

@@ -36,9 +36,7 @@ describe('createGitignore', () => {
     await createGitignore(scratchDir);
     const file = await stat(path.join(scratchDir, '.gitignore'));
     expect(file.isFile());
-    const contents = await readFile(path.join(scratchDir, '.gitignore'), {
-      encoding: 'utf-8'
-    });
+    const contents = await readFile(path.join(scratchDir, '.gitignore'), { encoding: 'utf-8' });
     expect(contents).toMatch('*.log');
     expect(contents).toMatch('.env');
   });

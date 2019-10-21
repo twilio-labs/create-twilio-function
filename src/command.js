@@ -35,12 +35,12 @@ const cliInfo = {
   },
 };
 
-function builder(command) {
-  command.positional('name', {
+function builder(cmd) {
+  cmd.positional('name', {
     describe: 'Name of your project.',
     type: 'string',
   });
-  command.options(cliInfo.options);
+  cmd.options(cliInfo.options);
 };
 
 module.exports = {

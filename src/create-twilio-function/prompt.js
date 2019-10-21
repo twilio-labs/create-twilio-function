@@ -31,12 +31,12 @@ function promptForAccountDetails(config) {
   return inquirer.prompt(questions);
 }
 
-function promptForProjectName(errors) {
+function promptForProjectName(err) {
   const questions = [
     {
       type: 'input',
       name: 'name',
-      message: `Project names ${errors.join(', ')}. Please choose a new project name.`,
+      message: `Project names ${err.join(', ')}. Please choose a new project name.`,
       validate: name => {
         const {
           valid,

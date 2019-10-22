@@ -12,7 +12,7 @@
     "twilio-functions",
     "serverless"
   ],
-  "author": "Phil Nash <philnash@twilio.com> (http://philna.sh)",
+  "author": "Phil Nash <philnash@twilio.com> (https://philna.sh)",
   "repository": {
     "type": "git",
     "url": "https://github.com/twilio-labs/create-twilio-function.git"
@@ -24,7 +24,7 @@
   "license": "MIT",
   "devDependencies": {
     "jest": "^24.5.0",
-    "nock": "^10.0.6"
+    "nock": "^11.3.4"
   },
   "dependencies": {
     "boxen": "^3.0.0",

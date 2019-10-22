@@ -2,11 +2,9 @@ const versions = require('./versions');
 const fs = require('fs');
 const { promisify } = require('util');
 const mkdir = promisify(fs.mkdir);
-const open = promisify(fs.open);
-const write = promisify(fs.write);
+const writeFile = promisify(fs.writeFile);
 const readdir = promisify(fs.readdir);
 const copyFile = promisify(fs.copyFile);
-const writeFile = promisify(fs.writeFile);
 const { COPYFILE_EXCL } = fs.constants;
 const stat = promisify(fs.stat);
 const path = require('path');
@@ -21,10 +19,8 @@ function createDirectory(pathName, dirName) {
   return mkdir(path.join(pathName, dirName));
 }
 
-function createFile(fullPath, content) {
-  return open(fullPath, 'wx').then(fd => {
-    return write(fd, content);
-  });
+async function createFile(fullPath, content) {
+  return writeFile(fullPath, content, { flag: 'wx' });
 }
 
 function createPackageJSON(pathName, name) {
@@ -115,7 +111,7 @@ function createTestFile(filePath) {
 
   const fileName = path.basename(filePath, '.js');
   const testFileName = path.join(path.dirname(filePath), `${fileName}.test.js`);
-  return writeFile(testFileName, Mustache.render(TEST_FILE_TEMPLATE, { fileName }));
+  return createFile(testFileName, Mustache.render(TEST_FILE_TEMPLATE, { fileName }));
 }
 
 function createTestFiles(pathName) {
@@ -128,6 +124,8 @@ function createTestFiles(pathName) {
             return createTestFiles(fullPath);
           } else if (!fullPath.match(/\.(test|spec)\.js$/)) {
             return createTestFile(fullPath);
+          } else {
+            return Promise.resolve();
           }
         })
       })

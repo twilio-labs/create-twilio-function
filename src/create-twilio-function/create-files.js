@@ -54,7 +54,7 @@ function copyRecursively(src, dest) {
             path.join(src, child),
             path.join(dest, child),
             COPYFILE_EXCL
-          ).catch(console.error);
+          );
         })
       )
     );

@@ -26,12 +26,12 @@ async function importCredentials(config) {
     return {};
   }
 
-  if (config.importCredentials) {
+  if (config.importedCredentials) {
     return credentials;
   }
 
-  const { importCredentials } = await inquirer.prompt(questions);
-  return importCredentials ? credentials : {};
+  const { importedCredentials } = await inquirer.prompt(questions);
+  return importedCredentials ? credentials : {};
 }
 
 module.exports = importCredentials;

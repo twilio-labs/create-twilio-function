@@ -7,5 +7,8 @@ module.exports = {
   'parserOptions': {
     'ecmaVersion': 9,
     'sourceType': 'module',
+  },
+  'rules': {
+      'no-console': 'off'
   }
 }

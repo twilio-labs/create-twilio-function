@@ -55,7 +55,9 @@ describe('promptForAccountDetails', () => {
   });
 
   test('should not ask for credentials if skip-credentials flag is true', async () => {
-    inquirer.prompt = jest.fn(() => {});
+    inquirer.prompt = jest.fn(() => {
+      return 0;
+    });
     await promptForAccountDetails({ skipCredentials: true });
     expect(inquirer.prompt).not.toHaveBeenCalled();
   });

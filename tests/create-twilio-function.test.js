@@ -103,6 +103,7 @@ describe('createTwilioFunction', () => {
     });
 
     it('scaffolds a Twilio Function with a template', async () => {
+      /* eslint-disable camelcase */
       const gitHubAPI = nock('https://api.github.com');
       gitHubAPI
         .get('/repos/twilio-labs/function-templates/contents/blank')
@@ -123,6 +124,7 @@ describe('createTwilioFunction', () => {
               'https://raw.githubusercontent.com/twilio-labs/function-templates/master/blank/functions/blank.js',
           },
         ]);
+      /* eslint-enable camelcase */
       const gitHubRaw = nock('https://raw.githubusercontent.com');
       gitHubRaw
         .get('/twilio-labs/function-templates/master/blank/functions/blank.js')

@@ -27,12 +27,10 @@ function createPackageJSON(pathName, name) {
       scripts: {
         test: 'echo "Error: no test specified" && exit 1',
         start: 'twilio-run',
-        deploy: 'twilio-run deploy'
+        deploy: 'twilio-run deploy',
       },
-      devDependencies: {
-        'twilio-run': versions.twilioRun
-      },
-      engines: { node: versions.node }
+      devDependencies: { 'twilio-run': versions.twilioRun },
+      engines: { node: versions.node },
     },
     null,
     2
@@ -42,22 +40,16 @@ function createPackageJSON(pathName, name) {
 
 function copyRecursively(src, dest) {
   return readdir(src).then(children => {
-    return Promise.all(
-      children.map(child =>
-        stat(path.join(src, child)).then(stat => {
-          if (stat.isDirectory()) {
-            return mkdir(path.join(dest, child)).then(() =>
-              copyRecursively(path.join(src, child), path.join(dest, child))
-            );
-          }
-          return copyFile(
-            path.join(src, child),
-            path.join(dest, child),
-            COPYFILE_EXCL
-          );
-        })
-      )
-    );
+    return Promise.all(children.map(child => stat(path.join(src, child)).then(stat => {
+      if (stat.isDirectory()) {
+        return mkdir(path.join(dest, child)).then(() => copyRecursively(path.join(src, child), path.join(dest, child)));
+      }
+      return copyFile(
+        path.join(src, child),
+        path.join(dest, child),
+        COPYFILE_EXCL
+      );
+    })));
   });
 }
 
@@ -68,7 +60,10 @@ function createExampleFromTemplates(pathName) {
   );
 }
 
-function createEnvFile(pathName, { accountSid, authToken }) {
+function createEnvFile(pathName, {
+  accountSid,
+  authToken,
+}) {
   const fullPath = path.join(pathName, '.env');
   const content = `ACCOUNT_SID=${accountSid}
 AUTH_TOKEN=${authToken}`;
@@ -86,5 +81,5 @@ module.exports = {
   createPackageJSON,
   createExampleFromTemplates,
   createEnvFile,
-  createNvmrcFile
+  createNvmrcFile,
 };

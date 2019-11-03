@@ -1,7 +1,4 @@
-const {
-  promptForAccountDetails,
-  promptForProjectName,
-} = require('./create-twilio-function/prompt');
+const { promptForAccountDetails, promptForProjectName } = require('./create-twilio-function/prompt');
 const validateProjectName = require('./create-twilio-function/validate-project-name');
 const {
   createDirectory,
@@ -30,10 +27,7 @@ async function cleanUpAndExit(projectDir, spinner, errorMessage) {
 }
 
 async function createTwilioFunction(config) {
-  const {
-    valid,
-    errors,
-  } = validateProjectName(config.name);
+  const { valid, errors } = validateProjectName(config.name);
   if (!valid) {
     const { name } = await promptForProjectName(errors);
     config.name = name;
@@ -47,14 +41,16 @@ async function createTwilioFunction(config) {
     spinner.succeed();
   } catch (e) {
     switch (e.code) {
-    case 'EEXIST':
-      spinner.fail(`A directory called '${config.name}' already exists. Please create your function in a new directory.`);
-      break;
-    case 'EACCES':
-      spinner.fail(`You do not have permission to create files or directories in the path '${config.path}'.`);
-      break;
-    default:
-      spinner.fail(e.message);
+      case 'EEXIST':
+        spinner.fail(
+          `A directory called '${config.name}' already exists. Please create your function in a new directory.`,
+        );
+        break;
+      case 'EACCES':
+        spinner.fail(`You do not have permission to create files or directories in the path '${config.path}'.`);
+        break;
+      default:
+        spinner.fail(e.message);
     }
     process.exitCode = 1;
     return;
@@ -67,7 +63,7 @@ async function createTwilioFunction(config) {
   }
   config = {
     ...accountDetails,
-    ...config, 
+    ...config,
   };
 
   // Scaffold project
@@ -88,11 +84,7 @@ async function createTwilioFunction(config) {
       await downloadTemplate(config.template, '', projectDir);
       spinner.succeed();
     } catch (err) {
-      await cleanUpAndExit(
-        projectDir,
-        spinner,
-        `The template "${config.template}" doesn't exist`
-      );
+      await cleanUpAndExit(projectDir, spinner, `The template "${config.template}" doesn't exist`);
       return;
     }
   } else {
@@ -117,15 +109,19 @@ async function createTwilioFunction(config) {
     spinner.succeed();
   } catch (err) {
     spinner.fail();
-    console.log(`There was an error installing the dependencies, but your project is otherwise complete in ./${config.name}`);
+    console.log(
+      `There was an error installing the dependencies, but your project is otherwise complete in ./${config.name}`,
+    );
   }
 
   // Success message
 
-  console.log(boxen(await successMessage(config), {
-    padding: 1,
-    borderStyle: 'round', 
-  }));
+  console.log(
+    boxen(await successMessage(config), {
+      padding: 1,
+      borderStyle: 'round',
+    }),
+  );
 }
 
 module.exports = createTwilioFunction;

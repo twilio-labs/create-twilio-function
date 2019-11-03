@@ -55,10 +55,12 @@ describe('createTwilioFunction', () => {
 
   describe('with an acceptable project name', () => {
     beforeEach(() => {
-      inquirer.prompt = jest.fn(() => Promise.resolve({
-        accountSid: 'test-sid',
-        authToken: 'test-auth-token',
-      }));
+      inquirer.prompt = jest.fn(() =>
+        Promise.resolve({
+          accountSid: 'test-sid',
+          authToken: 'test-auth-token',
+        }),
+      );
 
       nock('https://raw.githubusercontent.com')
         .get('/github/gitignore/master/Node.gitignore')
@@ -105,41 +107,30 @@ describe('createTwilioFunction', () => {
     it('scaffolds a Twilio Function with a template', async () => {
       /* eslint-disable camelcase */
       const gitHubAPI = nock('https://api.github.com');
-      gitHubAPI
-        .get('/repos/twilio-labs/function-templates/contents/blank')
-        .reply(200, [
-          { name: 'functions' },
-          {
-            name: '.env',
-            download_url:
-              'https://raw.githubusercontent.com/twilio-labs/function-templates/master/blank/.env',
-          },
-        ]);
-      gitHubAPI
-        .get('/repos/twilio-labs/function-templates/contents/blank/functions')
-        .reply(200, [
-          {
-            name: 'blank.js',
-            download_url:
-              'https://raw.githubusercontent.com/twilio-labs/function-templates/master/blank/functions/blank.js',
-          },
-        ]);
+      gitHubAPI.get('/repos/twilio-labs/function-templates/contents/blank').reply(200, [
+        { name: 'functions' },
+        {
+          name: '.env',
+          download_url: 'https://raw.githubusercontent.com/twilio-labs/function-templates/master/blank/.env',
+        },
+      ]);
+      gitHubAPI.get('/repos/twilio-labs/function-templates/contents/blank/functions').reply(200, [
+        {
+          name: 'blank.js',
+          download_url:
+            'https://raw.githubusercontent.com/twilio-labs/function-templates/master/blank/functions/blank.js',
+        },
+      ]);
       /* eslint-enable camelcase */
       const gitHubRaw = nock('https://raw.githubusercontent.com');
-      gitHubRaw
-        .get('/twilio-labs/function-templates/master/blank/functions/blank.js')
-        .reply(
-          200,
-          `exports.handler = function(context, event, callback) {
+      gitHubRaw.get('/twilio-labs/function-templates/master/blank/functions/blank.js').reply(
+        200,
+        `exports.handler = function(context, event, callback) {
   callback(null, {});
-};`
-        );
-      gitHubRaw
-        .get('/github/gitignore/master/Node.gitignore')
-        .reply(200, 'node_modules/');
-      gitHubRaw
-        .get('/twilio-labs/function-templates/master/blank/.env')
-        .reply(200, '');
+};`,
+      );
+      gitHubRaw.get('/github/gitignore/master/Node.gitignore').reply(200, 'node_modules/');
+      gitHubRaw.get('/twilio-labs/function-templates/master/blank/.env').reply(200, '');
 
       const name = 'test-function';
       await createTwilioFunction({
@@ -184,9 +175,7 @@ describe('createTwilioFunction', () => {
       const templateName = 'missing';
       const name = 'test-function';
       const gitHubAPI = nock('https://api.github.com');
-      gitHubAPI
-        .get(`/repos/twilio-labs/function-templates/contents/${templateName}`)
-        .reply(404);
+      gitHubAPI.get(`/repos/twilio-labs/function-templates/contents/${templateName}`).reply(404);
 
       const fail = jest.spyOn(spinner, 'fail');
 
@@ -220,7 +209,9 @@ describe('createTwilioFunction', () => {
       expect.assertions(4);
 
       expect(fail).toHaveBeenCalledTimes(1);
-      expect(fail).toHaveBeenCalledWith(`A directory called '${name}' already exists. Please create your function in a new directory.`);
+      expect(fail).toHaveBeenCalledWith(
+        `A directory called '${name}' already exists. Please create your function in a new directory.`,
+      );
       expect(console.log).not.toHaveBeenCalled();
 
       try {
@@ -249,7 +240,9 @@ describe('createTwilioFunction', () => {
       expect.assertions(4);
 
       expect(fail).toHaveBeenCalledTimes(1);
-      expect(fail).toHaveBeenCalledWith(`You do not have permission to create files or directories in the path '${scratchDir}'.`);
+      expect(fail).toHaveBeenCalledWith(
+        `You do not have permission to create files or directories in the path '${scratchDir}'.`,
+      );
       expect(console.log).not.toHaveBeenCalled();
 
       try {
@@ -263,12 +256,12 @@ describe('createTwilioFunction', () => {
   describe('with an unacceptable project name', () => {
     beforeEach(() => {
       inquirer.prompt = jest.fn();
-      inquirer.prompt
-        .mockReturnValueOnce(Promise.resolve({ name: 'test-function' }))
-        .mockReturnValueOnce(Promise.resolve({
+      inquirer.prompt.mockReturnValueOnce(Promise.resolve({ name: 'test-function' })).mockReturnValueOnce(
+        Promise.resolve({
           accountSid: 'test-sid',
           authToken: 'test-auth-token',
-        }));
+        }),
+      );
 
       nock('https://raw.githubusercontent.com')
         .get('/github/gitignore/master/Node.gitignore')

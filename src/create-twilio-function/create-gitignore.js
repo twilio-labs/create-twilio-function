@@ -7,10 +7,10 @@ const path = require('path');
 function createGitignore(dirPath) {
   const fullPath = path.join(dirPath, '.gitignore');
   return open(fullPath, 'wx').then(fd => {
-    const stream = fs.createWriteStream(null, { fd: fd });
+    const stream = fs.createWriteStream(null, { fd });
     return writeGitignore({
       type: 'Node',
-      file: stream, 
+      file: stream,
     });
   });
 }

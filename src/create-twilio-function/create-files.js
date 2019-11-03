@@ -21,7 +21,7 @@ function createPackageJSON(pathName, name) {
   const fullPath = path.join(pathName, 'package.json');
   const packageJSON = JSON.stringify(
     {
-      name: name,
+      name,
       version: '0.0.0',
       private: true,
       scripts: {
@@ -33,37 +33,33 @@ function createPackageJSON(pathName, name) {
       engines: { node: versions.node },
     },
     null,
-    2
+    2,
   );
   return createFile(fullPath, packageJSON);
 }
 
 function copyRecursively(src, dest) {
   return readdir(src).then(children => {
-    return Promise.all(children.map(child => stat(path.join(src, child)).then(stats => {
-      if (stats.isDirectory()) {
-        return mkdir(path.join(dest, child)).then(() => copyRecursively(path.join(src, child), path.join(dest, child)));
-      }
-      return copyFile(
-        path.join(src, child),
-        path.join(dest, child),
-        COPYFILE_EXCL
-      );
-    })));
+    return Promise.all(
+      children.map(child =>
+        stat(path.join(src, child)).then(stats => {
+          if (stats.isDirectory()) {
+            return mkdir(path.join(dest, child)).then(() =>
+              copyRecursively(path.join(src, child), path.join(dest, child)),
+            );
+          }
+          return copyFile(path.join(src, child), path.join(dest, child), COPYFILE_EXCL);
+        }),
+      ),
+    );
   });
 }
 
 function createExampleFromTemplates(pathName) {
-  return copyRecursively(
-    path.join(__dirname, '..', '..', 'templates'),
-    pathName
-  );
+  return copyRecursively(path.join(__dirname, '..', '..', 'templates'), pathName);
 }
 
-function createEnvFile(pathName, {
-  accountSid,
-  authToken,
-}) {
+function createEnvFile(pathName, { accountSid, authToken }) {
   const fullPath = path.join(pathName, '.env');
   const content = `ACCOUNT_SID=${accountSid}
 AUTH_TOKEN=${authToken}`;

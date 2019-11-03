@@ -23,8 +23,8 @@ Get started by running:
     getWindowSize().width - 8,
     {
       trim: false,
-      hard: true, 
-    }
+      hard: true,
+    },
   );
 }
 

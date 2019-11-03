@@ -4,7 +4,7 @@ const validateProjectName = require('./validate-project-name');
 function validateAccountSid(input) {
   if (input.startsWith('AC') || input === '') {
     return true;
-  } 
+  }
   return 'An Account SID starts with "AC".';
 }
 
@@ -38,10 +38,7 @@ function promptForProjectName(err) {
       name: 'name',
       message: `Project names ${err.join(', ')}. Please choose a new project name.`,
       validate: name => {
-        const {
-          valid,
-          errors,
-        } = validateProjectName(name);
+        const { valid, errors } = validateProjectName(name);
         if (valid) {
           return valid;
         }

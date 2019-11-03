@@ -6,7 +6,8 @@
   "main": "./src/create-twilio-function.js",
   "scripts": {
     "test": "jest",
-    "lint": "eslint src tests"
+    "lint": "eslint src tests",
+    "lint:fix": "npm run lint -- --fix"
   },
   "keywords": [
     "twilio",

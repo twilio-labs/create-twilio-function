@@ -1,0 +1,30 @@
+const handler = require('./{{fileName}}').handler;
+
+const context = {
+  // Any additional context
+};
+const event = {
+  Body: 'Hello',
+  From: 'ExternalNumber'
+};
+
+test('returns a MessagingResponse', done => {
+  const callback = (err, result) => {
+    // Twilio is available as a global
+    expect(result).toBeInstanceOf(Twilio.twiml.MessagingResponse);
+    done();
+  };
+
+  handler(context, event, callback);
+});
+
+test('returns an error when the function fails', done => {
+  const callback = (err, result) => {
+    expect(err).toBeInstanceOf(Error);
+    done();
+  };
+
+  // Make it fail
+
+  handler(context, event, callback);
+});

@@ -6,9 +6,11 @@ const validateProjectName = require('./create-twilio-function/validate-project-n
 const {
   createDirectory,
   createEnvFile,
-  createExampleFromTemplates,
+  createExample,
   createPackageJSON,
-  createNvmrcFile
+  createNvmrcFile,
+  createJestSetupFile,
+  createTestFiles
 } = require('./create-twilio-function/create-files');
 const createGitignore = require('./create-twilio-function/create-gitignore');
 const importCredentials = require('./create-twilio-function/import-credentials');
@@ -86,7 +88,6 @@ async function createTwilioFunction(config) {
     await createDirectory(projectDir, 'assets');
     try {
       await downloadTemplate(config.template, '', projectDir);
-      spinner.succeed();
     } catch (err) {
       await cleanUpAndExit(
         projectDir,
@@ -96,9 +97,11 @@ async function createTwilioFunction(config) {
       return;
     }
   } else {
-    await createExampleFromTemplates(projectDir);
-    spinner.succeed();
+    await createExample(projectDir);
   }
+  await createJestSetupFile(projectDir);
+  await createTestFiles(path.join(projectDir, 'functions'));
+  spinner.succeed();
 
   // Download .gitignore file from https://github.com/github/gitignore/
   try {

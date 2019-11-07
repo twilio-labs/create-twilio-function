@@ -8,6 +8,12 @@ const copyFile = promisify(fs.copyFile);
 const { COPYFILE_EXCL } = fs.constants;
 const stat = promisify(fs.stat);
 const path = require('path');
+const Mustache = require('mustache');
+
+const EXAMPLE_DIR = path.join(__dirname, '..', '..', 'example');
+const TEMPLATES_DIR = path.join(__dirname, '..', '..', 'templates');
+
+let TEST_FILE_TEMPLATE;
 
 function createDirectory(pathName, dirName) {
   return mkdir(path.join(pathName, dirName));
@@ -25,12 +31,20 @@ function createPackageJSON(pathName, name) {
       version: '0.0.0',
       private: true,
       scripts: {
-        test: 'echo "Error: no test specified" && exit 1',
+        test: 'jest',
         start: 'twilio-run',
         deploy: 'twilio-run deploy'
       },
       devDependencies: {
-        'twilio-run': versions.twilioRun
+        'twilio-run': versions.twilioRun,
+        'jest': versions.jest,
+        'dotenv': versions.dotenv
+      },
+      jest: {
+        collectCoverage: true,
+        setupFilesAfterEnv: ['./jest.setup.js'],
+        testEnvironment: 'node',
+        testPathIgnorePatterns: ["/node_modules/", "/assets/"]
       },
       engines: { node: versions.node }
     },
@@ -61,9 +75,9 @@ function copyRecursively(src, dest) {
   });
 }
 
-function createExampleFromTemplates(pathName) {
+function createExample(pathName) {
   return copyRecursively(
-    path.join(__dirname, '..', '..', 'templates'),
+    EXAMPLE_DIR,
     pathName
   );
 }
@@ -81,10 +95,49 @@ function createNvmrcFile(pathName) {
   return createFile(fullPath, content);
 }
 
+function createJestSetupFile(pathName) {
+  return copyRecursively(
+    path.join(TEMPLATES_DIR, 'jest'),
+    pathName
+  );
+}
+
+function createTestFile(filePath) {
+  if (!TEST_FILE_TEMPLATE) {
+    TEST_FILE_TEMPLATE = fs.readFileSync(path.join(TEMPLATES_DIR, 'test.mustache'), { encoding: 'utf-8' });
+    Mustache.parse(TEST_FILE_TEMPLATE);
+  }
+
+  const fileName = path.basename(filePath, '.js');
+  const testFileName = path.join(path.dirname(filePath), `${fileName}.test.js`);
+  return createFile(testFileName, Mustache.render(TEST_FILE_TEMPLATE, { fileName }));
+}
+
+function createTestFiles(pathName) {
+  return readdir(pathName).then(children => {
+    return Promise.all(
+      children.map(child => {
+        const fullPath = path.join(pathName, child);
+        return stat(fullPath).then(stat => {
+          if (stat.isDirectory()) {
+            return createTestFiles(fullPath);
+          } else if (!fullPath.match(/\.(test|spec)\.js$/)) {
+            return createTestFile(fullPath);
+          } else {
+            return Promise.resolve();
+          }
+        })
+      })
+    );
+  });
+}
+
 module.exports = {
   createDirectory,
   createPackageJSON,
-  createExampleFromTemplates,
+  createExample,
   createEnvFile,
-  createNvmrcFile
+  createNvmrcFile,
+  createJestSetupFile,
+  createTestFiles
 };

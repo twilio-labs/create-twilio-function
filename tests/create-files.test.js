@@ -1,9 +1,11 @@
 const {
   createPackageJSON,
   createDirectory,
-  createExampleFromTemplates,
+  createExample,
   createEnvFile,
-  createNvmrcFile
+  createNvmrcFile,
+  createJestSetupFile,
+  createTestFiles
 } = require('../src/create-twilio-function/create-files');
 const versions = require('../src/create-twilio-function/versions');
 const fs = require('fs');
@@ -73,10 +75,10 @@ describe('createPackageJSON', () => {
   });
 });
 
-describe('createExampleFromTemplates', () => {
-  const templatesDir = path.join(process.cwd(), 'templates');
+describe('createExample', () => {
+  const templatesDir = path.join(process.cwd(), 'example');
   test('it creates functions and assets directories', async () => {
-    await createExampleFromTemplates(scratchDir);
+    await createExample(scratchDir);
 
     const dirs = await readdir(scratchDir);
     const templateDirContents = await readdir(templatesDir);
@@ -84,7 +86,7 @@ describe('createExampleFromTemplates', () => {
   });
 
   test('it copies the functions from the templates/functions directory', async () => {
-    await createExampleFromTemplates(scratchDir);
+    await createExample(scratchDir);
 
     const functions = await readdir(path.join(scratchDir, 'functions'));
     const templateFunctions = await readdir(
@@ -97,7 +99,7 @@ describe('createExampleFromTemplates', () => {
     await mkdir(path.join(scratchDir, 'functions'));
     expect.assertions(1);
     try {
-      await createExampleFromTemplates(scratchDir);
+      await createExample(scratchDir);
     } catch (e) {
       expect(e.toString()).toMatch('file already exists');
     }
@@ -152,5 +154,56 @@ describe('createNvmrcFile', () => {
     } catch (e) {
       expect(e.toString()).toMatch('file already exists');
     }
+  });
+});
+
+describe('createJestSetupFile', () => {
+  test('it creates jest.setup.js', async () => {
+    await createJestSetupFile('./scratch');
+    const file = await stat('./scratch/jest.setup.js');
+    expect(file.isFile());
+  });
+});
+
+describe('createTestFiles', () => {
+  beforeEach(async () => {
+    await mkdir('./scratch/functions');
+  });
+
+  test('generates one test file per a function', async () => {
+    fs.closeSync(fs.openSync('./scratch/functions/test-func.js', 'w'));
+    fs.closeSync(fs.openSync('./scratch/functions/another-one.js', 'w'));
+    await createTestFiles('./scratch/functions');
+
+    const testFuncTest = await stat('./scratch/functions/test-func.test.js');
+    expect(testFuncTest.isFile());
+
+    const anotherOneTest = await stat('./scratch/functions/another-one.test.js');
+    expect(anotherOneTest.isFile());
+  });
+
+  test('requires the right function in each testfile', async () => {
+    fs.closeSync(fs.openSync('./scratch/functions/test-func.js', 'w'));
+    fs.closeSync(fs.openSync('./scratch/functions/another-one.js', 'w'));
+    await createTestFiles('./scratch/functions');
+
+    const testFuncTestContents = await readFile('./scratch/functions/test-func.test.js', { encoding: 'utf-8' });
+    expect(testFuncTestContents).toContain('require(\'./test-func\').handler');
+
+    const anotherOneTestContents = await readFile('./scratch/functions/another-one.test.js', { encoding: 'utf-8' });
+    expect(anotherOneTestContents).toContain('require(\'./another-one\').handler');
+  });
+
+  test('works recursively', async () => {
+    await mkdir('./scratch/functions/sub');
+    fs.closeSync(fs.openSync('./scratch/functions/test-func.js', 'w'));
+    fs.closeSync(fs.openSync('./scratch/functions/sub/inner.js', 'w'));
+    await createTestFiles('./scratch/functions');
+
+    const testFuncTest = await stat('./scratch/functions/test-func.test.js');
+    expect(testFuncTest.isFile());
+
+    const innerTest = await stat('./scratch/functions/sub/inner.test.js');
+    expect(innerTest.isFile());
   });
 });

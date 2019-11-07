@@ -88,6 +88,9 @@ describe('createTwilioFunction', () => {
       const gitignore = await stat(path.join(scratchDir, name, '.gitignore'));
       expect(gitignore.isFile());
 
+      const jestSetup = await stat(path.join(scratchDir, name, 'jest.setup.js'));
+      expect(jestSetup.isFile());
+
       const functions = await stat(path.join(scratchDir, name, 'functions'));
       expect(functions.isDirectory());
 
@@ -98,6 +101,9 @@ describe('createTwilioFunction', () => {
         path.join(scratchDir, name, 'functions', 'hello-world.js')
       );
       expect(example.isFile());
+
+      const exampleTest = await stat(path.join(scratchDir, name, 'functions', 'hello-world.test.js'));
+      expect(exampleTest.isFile());
 
       const asset = await stat(
         path.join(scratchDir, name, 'assets', 'index.html')
@@ -171,6 +177,9 @@ describe('createTwilioFunction', () => {
       const gitignore = await stat(path.join(scratchDir, name, '.gitignore'));
       expect(gitignore.isFile());
 
+      const jestSetup = await stat(path.join(scratchDir, name, 'jest.setup.js'));
+      expect(jestSetup.isFile());
+
       const functions = await stat(path.join(scratchDir, name, 'functions'));
       expect(functions.isDirectory());
 
@@ -188,6 +197,11 @@ describe('createTwilioFunction', () => {
         path.join(scratchDir, name, 'functions', 'blank.js')
       );
       expect(templateFunction.isFile());
+
+      const templateFunctionTest = await stat(
+        path.join(scratchDir, name, 'functions', 'blank.test.js')
+      );
+      expect(templateFunctionTest.isFile());
 
       const exampleAssets = await readdir(
         path.join(scratchDir, name, 'assets')
@@ -322,6 +336,9 @@ describe('createTwilioFunction', () => {
       const gitignore = await stat(path.join(scratchDir, name, '.gitignore'));
       expect(gitignore.isFile());
 
+      const jestSetup = await stat(path.join(scratchDir, name, 'jest.setup.js'));
+      expect(jestSetup.isFile());
+
       const functions = await stat(path.join(scratchDir, name, 'functions'));
       expect(functions.isDirectory());
 
@@ -332,6 +349,11 @@ describe('createTwilioFunction', () => {
         path.join(scratchDir, name, 'functions', 'hello-world.js')
       );
       expect(example.isFile());
+
+      const exampleTest = await stat(
+        path.join(scratchDir, name, 'functions', 'hello-world.test.js')
+      );
+      expect(exampleTest.isFile());
 
       const asset = await stat(
         path.join(scratchDir, name, 'assets', 'index.html')

@@ -1,15 +1,22 @@
 const inquirer = require('inquirer');
+const terminalLink = require('terminal-link');
 const validateProjectName = require('./validate-project-name');
 
 function validateAccountSid(input) {
   if (input.startsWith('AC') || input === '') {
     return true;
-  } 
+  }
   return 'An Account SID starts with "AC".';
 }
 
 async function promptForAccountDetails(config) {
   if (config.skipCredentials) return {};
+  console.log(
+    `Please enter your Twilio credentials which you can find in your ${terminalLink(
+      'Twilio console',
+      'https://twil.io/your-console'
+    )}.`
+  );
   const questions = [];
   if (typeof config.accountSid === 'undefined') {
     questions.push({

@@ -4,6 +4,7 @@ const {
   promptForProjectName
 } = require('../src/create-twilio-function/prompt');
 const inquirer = require('inquirer');
+console.log = jest.fn();
 
 describe('accountSid validation', () => {
   test('an accountSid should start with "AC"', () => {
@@ -34,6 +35,8 @@ describe('promptForAccountDetails', () => {
     });
     expect(inquirer.prompt).toHaveBeenCalledTimes(1);
     expect(inquirer.prompt).toHaveBeenCalledWith(expect.any(Array));
+    expect(console.log).toHaveBeenCalledTimes(1);
+    expect(console.log).toHaveBeenCalledWith(expect.any(String));
   });
 
   test(`should ask for an auth if not specified`, async () => {
@@ -48,6 +51,8 @@ describe('promptForAccountDetails', () => {
     });
     expect(inquirer.prompt).toHaveBeenCalledTimes(1);
     expect(inquirer.prompt).toHaveBeenCalledWith(expect.any(Array));
+    expect(console.log).toHaveBeenCalledTimes(1);
+    expect(console.log).toHaveBeenCalledWith(expect.any(String));
   });
 
   test(`should not prompt if account sid and auth token specified`, async () => {
@@ -64,6 +69,7 @@ describe('promptForAccountDetails', () => {
     });
     expect(inquirer.prompt).toHaveBeenCalledTimes(1);
     expect(inquirer.prompt).toHaveBeenCalledWith([]);
+    expect(console.log).not.toHaveBeenCalled();
   });
 
   test('should not ask for credentials if skip-credentials flag is true', async () => {
@@ -72,6 +78,7 @@ describe('promptForAccountDetails', () => {
       skipCredentials: true
     });
     expect(inquirer.prompt).not.toHaveBeenCalled();
+    expect(console.log).not.toHaveBeenCalled();
   });
 });
 

@@ -11,12 +11,6 @@ function validateAccountSid(input) {
 
 async function promptForAccountDetails(config) {
   if (config.skipCredentials) return {};
-  console.log(
-    `Please enter your Twilio credentials which you can find in your ${terminalLink(
-      'Twilio console',
-      'https://twil.io/your-console'
-    )}.`
-  );
   const questions = [];
   if (typeof config.accountSid === 'undefined') {
     questions.push({
@@ -32,6 +26,14 @@ async function promptForAccountDetails(config) {
       name: 'authToken',
       message: 'Twilio auth token'
     });
+  }
+  if (questions.length > 0) {
+    console.log(
+      `Please enter your Twilio credentials which you can find in your ${terminalLink(
+        'Twilio console',
+        'https://twil.io/your-console'
+      )}.`
+    );
   }
   return await inquirer.prompt(questions);
 }

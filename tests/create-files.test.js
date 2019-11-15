@@ -1,3 +1,15 @@
+const fs = require('fs');
+const path = require('path');
+const { promisify } = require('util');
+
+const rimraf = promisify(require('rimraf'));
+
+const mkdir = promisify(fs.mkdir);
+const readFile = promisify(fs.readFile);
+const stat = promisify(fs.stat);
+const readdir = promisify(fs.readdir);
+
+const versions = require('../src/create-twilio-function/versions');
 const {
   createPackageJSON,
   createDirectory,
@@ -5,15 +17,6 @@ const {
   createEnvFile,
   createNvmrcFile,
 } = require('../src/create-twilio-function/create-files');
-const versions = require('../src/create-twilio-function/versions');
-const fs = require('fs');
-const { promisify } = require('util');
-const rimraf = promisify(require('rimraf'));
-const mkdir = promisify(fs.mkdir);
-const readFile = promisify(fs.readFile);
-const stat = promisify(fs.stat);
-const readdir = promisify(fs.readdir);
-const path = require('path');
 
 const scratchDir = path.join(process.cwd(), 'scratch');
 

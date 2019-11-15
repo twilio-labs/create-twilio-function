@@ -1,7 +1,8 @@
 const { getPackageManager } = require('pkg-install');
 const chalk = require('chalk');
-const getWindowSize = require('./window-size');
 const wrap = require('wrap-ansi');
+
+const getWindowSize = require('./window-size');
 
 async function successMessage(config) {
   const packageManager = await getPackageManager({ cwd: process.cwd() });

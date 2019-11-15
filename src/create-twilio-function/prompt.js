@@ -1,4 +1,5 @@
 const inquirer = require('inquirer');
+
 const validateProjectName = require('./validate-project-name');
 
 function validateAccountSid(input) {

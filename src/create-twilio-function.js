@@ -1,3 +1,11 @@
+const { promisify } = require('util');
+const path = require('path');
+
+const ora = require('ora');
+const boxen = require('boxen');
+const rimraf = promisify(require('rimraf'));
+const { downloadTemplate } = require('twilio-run/dist/templating/actions');
+
 const { promptForAccountDetails, promptForProjectName } = require('./create-twilio-function/prompt');
 const validateProjectName = require('./create-twilio-function/validate-project-name');
 const {
@@ -11,12 +19,6 @@ const createGitignore = require('./create-twilio-function/create-gitignore');
 const importCredentials = require('./create-twilio-function/import-credentials');
 const { installDependencies } = require('./create-twilio-function/install-dependencies');
 const successMessage = require('./create-twilio-function/success-message');
-const ora = require('ora');
-const boxen = require('boxen');
-const { downloadTemplate } = require('twilio-run/dist/templating/actions');
-const { promisify } = require('util');
-const rimraf = promisify(require('rimraf'));
-const path = require('path');
 
 async function cleanUpAndExit(projectDir, spinner, errorMessage) {
   spinner.fail(errorMessage);

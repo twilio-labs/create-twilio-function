@@ -1,12 +1,15 @@
-const nock = require('nock');
-const createGitignore = require('../src/create-twilio-function/create-gitignore');
-const { promisify } = require('util');
-const rimraf = promisify(require('rimraf'));
 const fs = require('fs');
+const path = require('path');
+const { promisify } = require('util');
+
+const rimraf = promisify(require('rimraf'));
+const nock = require('nock');
+
 const mkdir = promisify(fs.mkdir);
 const readFile = promisify(fs.readFile);
 const stat = promisify(fs.stat);
-const path = require('path');
+
+const createGitignore = require('../src/create-twilio-function/create-gitignore');
 
 const scratchDir = path.join(process.cwd(), 'scratch');
 

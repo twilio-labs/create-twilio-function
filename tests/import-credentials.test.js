@@ -1,5 +1,6 @@
-const importCredentials = require('../src/create-twilio-function/import-credentials');
 const inquirer = require('inquirer');
+
+const importCredentials = require('../src/create-twilio-function/import-credentials');
 
 describe('importCredentials', () => {
   describe('if credentials are present in the env', () => {

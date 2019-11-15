@@ -1,8 +1,10 @@
 const fs = require('fs');
-const { promisify } = require('util');
-const writeGitignore = promisify(require('gitignore').writeFile);
-const open = promisify(fs.open);
 const path = require('path');
+const { promisify } = require('util');
+
+const writeGitignore = promisify(require('gitignore').writeFile);
+
+const open = promisify(fs.open);
 
 function createGitignore(dirPath) {
   const fullPath = path.join(dirPath, '.gitignore');

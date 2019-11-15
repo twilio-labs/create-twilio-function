@@ -3,7 +3,7 @@ const inquirer = require('inquirer');
 const questions = [
   {
     type: 'confirm',
-    name: 'importCredentials',
+    name: 'importedCredentials',
     message: 'Your account credentials have been found in your environment variables. Import them?',
     default: true,
   },

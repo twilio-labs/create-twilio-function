@@ -1,15 +1,18 @@
-const createTwilioFunction = require('../src/create-twilio-function');
-const { installDependencies } = require('../src/create-twilio-function/install-dependencies');
+const fs = require('fs');
+const path = require('path');
+const { promisify } = require('util');
+
 const inquirer = require('inquirer');
 const ora = require('ora');
 const nock = require('nock');
-const fs = require('fs');
-const { promisify } = require('util');
 const rimraf = promisify(require('rimraf'));
+
 const mkdir = promisify(fs.mkdir);
 const stat = promisify(fs.stat);
 const readdir = promisify(fs.readdir);
-const path = require('path');
+
+const { installDependencies } = require('../src/create-twilio-function/install-dependencies');
+const createTwilioFunction = require('../src/create-twilio-function');
 
 jest.mock('window-size', () => ({ get: () => ({ width: 80 }) }));
 jest.mock('inquirer');

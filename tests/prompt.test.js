@@ -1,9 +1,10 @@
+const inquirer = require('inquirer');
+
 const {
   validateAccountSid,
   promptForAccountDetails,
   promptForProjectName,
 } = require('../src/create-twilio-function/prompt');
-const inquirer = require('inquirer');
 
 describe('accountSid validation', () => {
   test('an accountSid should start with "AC"', () => {

@@ -1,13 +1,15 @@
-const versions = require('./versions');
 const fs = require('fs');
+const path = require('path');
 const { promisify } = require('util');
+
+const versions = require('./versions');
+
 const mkdir = promisify(fs.mkdir);
 const writeFile = promisify(fs.writeFile);
 const readdir = promisify(fs.readdir);
 const copyFile = promisify(fs.copyFile);
 const { COPYFILE_EXCL } = fs.constants;
 const stat = promisify(fs.stat);
-const path = require('path');
 
 function createDirectory(pathName, dirName) {
   return mkdir(path.join(pathName, dirName));

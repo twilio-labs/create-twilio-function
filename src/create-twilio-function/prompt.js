@@ -9,22 +9,24 @@ function validateAccountSid(input) {
   return 'An Account SID starts with "AC".';
 }
 
-async function promptForAccountDetails(config) {
-  if (config.skipCredentials) return {};
+function promptForAccountDetails(config) {
+  if (config.skipCredentials) {
+    return {};
+  }
   const questions = [];
   if (typeof config.accountSid === 'undefined') {
     questions.push({
       type: 'input',
       name: 'accountSid',
       message: 'Twilio Account SID',
-      validate: validateAccountSid
+      validate: validateAccountSid,
     });
   }
   if (typeof config.authToken === 'undefined') {
     questions.push({
       type: 'password',
       name: 'authToken',
-      message: 'Twilio auth token'
+      message: 'Twilio auth token',
     });
   }
   if (questions.length > 0) {
@@ -35,29 +37,29 @@ async function promptForAccountDetails(config) {
       )}.`
     );
   }
-  return await inquirer.prompt(questions);
+  return inquirer.prompt(questions);
 }
 
-async function promptForProjectName(errors) {
+function promptForProjectName(err) {
   const questions = [
     {
       type: 'input',
       name: 'name',
-      message: `Project names ${errors.join(
-        ', '
-      )}. Please choose a new project name.`,
+      message: `Project names ${err.join(', ')}. Please choose a new project name.`,
       validate: name => {
         const { valid, errors } = validateProjectName(name);
-        if (valid) return valid;
+        if (valid) {
+          return valid;
+        }
         return `Project ${errors.join(', ')}.`;
-      }
-    }
+      },
+    },
   ];
-  return await inquirer.prompt(questions);
+  return inquirer.prompt(questions);
 }
 
 module.exports = {
   promptForAccountDetails,
   promptForProjectName,
-  validateAccountSid
+  validateAccountSid,
 };

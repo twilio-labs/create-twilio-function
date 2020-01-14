@@ -1,5 +1,6 @@
 const inquirer = require('inquirer');
 const terminalLink = require('terminal-link');
+
 const validateProjectName = require('./validate-project-name');
 
 function validateAccountSid(input) {
@@ -33,8 +34,8 @@ function promptForAccountDetails(config) {
     console.log(
       `Please enter your Twilio credentials which you can find in your ${terminalLink(
         'Twilio console',
-        'https://twil.io/your-console'
-      )}.`
+        'https://twil.io/your-console',
+      )}.`,
     );
   }
   return inquirer.prompt(questions);

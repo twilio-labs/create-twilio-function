@@ -16,6 +16,7 @@ const {
   createExampleFromTemplates,
   createEnvFile,
   createNvmrcFile,
+  createTsconfigFile
 } = require('../src/create-twilio-function/create-files');
 
 const scratchDir = path.join(process.cwd(), 'scratch');
@@ -55,10 +56,22 @@ describe('createPackageJSON', () => {
     await createPackageJSON(scratchDir, 'project-name');
     const file = await stat(path.join(scratchDir, 'package.json'));
     expect(file.isFile());
-    const packageJSON = JSON.parse(await readFile(path.join(scratchDir, 'package.json')));
+    const packageJSON = JSON.parse(await readFile(path.join(scratchDir, 'package.json'), 'utf-8'));
     expect(packageJSON.name).toEqual('project-name');
     expect(packageJSON.engines.node).toEqual(versions.node);
     expect(packageJSON.devDependencies['twilio-run']).toEqual(versions.twilioRun);
+  });
+
+  test('it creates a package.json file with typescript dependencies', async () => {
+    await createPackageJSON(scratchDir, 'project-name', true);
+    const file = await stat(path.join(scratchDir, 'package.json'));
+    expect(file.isFile());
+    const packageJSON = JSON.parse(await readFile(path.join(scratchDir, 'package.json'), 'utf-8'));
+    expect(packageJSON.name).toEqual('project-name');
+    expect(packageJSON.engines.node).toEqual(versions.node);
+    expect(packageJSON.devDependencies['twilio-run']).toEqual(versions.twilioRun);
+    expect(packageJSON.devDependencies['typescript']).toEqual(versions.typescript);
+    expect(packageJSON.devDependencies['@twilio-labs/serverless-runtime-types']).toEqual(versions.serverlessRuntimeTypes);
   });
 
   test('it rejects if there is already a package.json', async () => {
@@ -142,6 +155,26 @@ describe('createNvmrcFile', () => {
     expect.assertions(1);
     try {
       await createNvmrcFile(scratchDir);
+    } catch (e) {
+      expect(e.toString()).toMatch('file already exists');
+    }
+  });
+});
+
+describe('createTsconfig', () => {
+  test('it creates a new tsconfig.json file', async () => {
+    await createTsconfigFile(scratchDir);
+    const file = await stat(path.join(scratchDir, 'tsconfig.json'));
+    expect(file.isFile());
+    const contents = await readFile(path.join(scratchDir, 'tsconfig.json'), { encoding: 'utf-8' });
+    expect(contents).toMatch('"compilerOptions"');
+  });
+
+  test('it rejects if there is already an tsconfig.json file', async () => {
+    fs.closeSync(fs.openSync(path.join(scratchDir, 'tsconfig.json'), 'w'));
+    expect.assertions(1);
+    try {
+      await createTsconfigFile(scratchDir);
     } catch (e) {
       expect(e.toString()).toMatch('file already exists');
     }

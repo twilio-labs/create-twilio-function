@@ -14,6 +14,7 @@ const {
   createExampleFromTemplates,
   createPackageJSON,
   createNvmrcFile,
+  createTsconfigFile
 } = require('./create-twilio-function/create-files');
 const createGitignore = require('./create-twilio-function/create-gitignore');
 const importCredentials = require('./create-twilio-function/import-credentials');
@@ -86,7 +87,10 @@ async function createTwilioFunction(config) {
     authToken: config.authToken,
   });
   await createNvmrcFile(projectDir);
-  await createPackageJSON(projectDir, config.name);
+  await createPackageJSON(projectDir, config.name, config.typescript);
+  if (config.typescript) {
+    await createTsconfigFile(projectDir);
+  }
   if (config.template) {
     spinner.succeed();
     spinner.start(`Downloading template: "${config.template}"`);

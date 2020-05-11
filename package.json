@@ -7,7 +7,8 @@
   "scripts": {
     "test": "jest",
     "lint": "eslint src tests",
-    "lint:fix": "npm run lint -- --fix"
+    "lint:fix": "npm run lint -- --fix",
+    "build": "ncc build ./bin/create-twilio-function"
   },
   "keywords": [
     "twilio",
@@ -25,6 +26,7 @@
   },
   "license": "MIT",
   "devDependencies": {
+    "@zeit/ncc": "^0.22.1",
     "eslint": "^6.5.1",
     "eslint-config-twilio": "^1.23.0",
     "eslint-plugin-import": "^2.18.2",

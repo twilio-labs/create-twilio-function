@@ -24,27 +24,31 @@ const typescriptDeps = {
   'twilio-run': versions.twilioRun,
   typescript: versions.typescript,
   '@twilio-labs/serverless-runtime-types': versions.serverlessRuntimeTypes,
+  'copyfiles': versions.copyfiles,
 };
 
-function createPackageJSON(pathName, name, typescript = false) {
+function createPackageJSON(pathName, name, projectType = 'javascript') {
   const fullPath = path.join(pathName, 'package.json');
   const scripts = {
     test: 'echo "Error: no test specified" && exit 1',
     start: 'twilio-run',
     deploy: 'twilio-run deploy',
   }
-  if (typescript) {
-    scripts['build'] = 'tsc';
+  if (projectType === 'typescript') {
+    scripts['build'] = 'tsc && npm run build:copy-assets';
+    scripts['build:copy-assets'] = 'copyfiles src/assets/* src/assets/**/* --up 2 --exclude **/*.ts dist/assets/';
     scripts['prestart'] = 'npm run build';
     scripts['predeploy'] = 'npm run build';
+    scripts['start'] += ' --cwd dist';
+    scripts['deploy'] += ' --cwd dist';
   }
   const packageJSON = JSON.stringify(
     {
       name,
       version: '0.0.0',
       private: true,
-      scripts: scripts,
-      devDependencies: typescript ? typescriptDeps : javaScriptDeps,
+      scripts,
+      devDependencies: projectType === 'typescript' ? typescriptDeps : javaScriptDeps,
       engines: { node: versions.node },
     },
     null,
@@ -74,9 +78,9 @@ function copyRecursively(src, dest) {
   });
 }
 
-function createExampleFromTemplates(pathName) {
+function createExampleFromTemplates(pathName, projectType = 'javascript') {
   return copyRecursively(
-    path.join(__dirname, '..', '..', 'templates'),
+    path.join(__dirname, '..', '..', 'templates', projectType),
     pathName
   );
 }
@@ -104,7 +108,7 @@ function createTsconfigFile(pathName) {
         module: 'commonjs',
         strict: true,
         esModuleInterop: true,
-        outDir: 'functions',
+        outDir: 'dist',
         skipLibCheck: true
       },
     },

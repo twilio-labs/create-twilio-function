@@ -42,6 +42,7 @@ async function createTwilioFunction(config) {
     config.name = name;
   }
   const projectDir = path.join(config.path, config.name);
+  const projectType = config.typescript ? 'typescript' : 'javascript';
   const spinner = ora();
 
   try {
@@ -87,8 +88,8 @@ async function createTwilioFunction(config) {
     authToken: config.authToken,
   });
   await createNvmrcFile(projectDir);
-  await createPackageJSON(projectDir, config.name, config.typescript);
-  if (config.typescript) {
+  await createPackageJSON(projectDir, config.name, projectType);
+  if (projectType === 'typescript') {
     await createTsconfigFile(projectDir);
   }
   if (config.template) {
@@ -106,7 +107,7 @@ async function createTwilioFunction(config) {
     await createDirectory(projectDir, 'functions');
     await createDirectory(projectDir, 'assets');
   } else {
-    await createExampleFromTemplates(projectDir);
+    await createExampleFromTemplates(projectDir, projectType);
   }
   spinner.succeed();
 

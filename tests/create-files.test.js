@@ -16,7 +16,7 @@ const {
   createExampleFromTemplates,
   createEnvFile,
   createNvmrcFile,
-  createTsconfigFile
+  createTsconfigFile,
 } = require('../src/create-twilio-function/create-files');
 
 const scratchDir = path.join(process.cwd(), 'scratch');
@@ -63,15 +63,17 @@ describe('createPackageJSON', () => {
   });
 
   test('it creates a package.json file with typescript dependencies', async () => {
-    await createPackageJSON(scratchDir, 'project-name', true);
+    await createPackageJSON(scratchDir, 'project-name', 'typescript');
     const file = await stat(path.join(scratchDir, 'package.json'));
     expect(file.isFile());
     const packageJSON = JSON.parse(await readFile(path.join(scratchDir, 'package.json'), 'utf-8'));
     expect(packageJSON.name).toEqual('project-name');
     expect(packageJSON.engines.node).toEqual(versions.node);
     expect(packageJSON.devDependencies['twilio-run']).toEqual(versions.twilioRun);
-    expect(packageJSON.devDependencies['typescript']).toEqual(versions.typescript);
-    expect(packageJSON.devDependencies['@twilio-labs/serverless-runtime-types']).toEqual(versions.serverlessRuntimeTypes);
+    expect(packageJSON.devDependencies.typescript).toEqual(versions.typescript);
+    expect(packageJSON.devDependencies['@twilio-labs/serverless-runtime-types']).toEqual(
+      versions.serverlessRuntimeTypes,
+    );
   });
 
   test('it rejects if there is already a package.json', async () => {
@@ -86,31 +88,61 @@ describe('createPackageJSON', () => {
 });
 
 describe('createExampleFromTemplates', () => {
-  const templatesDir = path.join(process.cwd(), 'templates');
-  test('it creates functions and assets directories', async () => {
-    await createExampleFromTemplates(scratchDir);
-
-    const dirs = await readdir(scratchDir);
-    const templateDirContents = await readdir(templatesDir);
-    expect(dirs).toEqual(templateDirContents);
-  });
-
-  test('it copies the functions from the templates/functions directory', async () => {
-    await createExampleFromTemplates(scratchDir);
-
-    const functions = await readdir(path.join(scratchDir, 'functions'));
-    const templateFunctions = await readdir(path.join(templatesDir, 'functions'));
-    expect(functions).toEqual(templateFunctions);
-  });
-
-  test('it rejects if there is already a functions directory', async () => {
-    await mkdir(path.join(scratchDir, 'functions'));
-    expect.assertions(1);
-    try {
+  describe('javascript', () => {
+    const templatesDir = path.join(process.cwd(), 'templates', 'javascript');
+    test('it creates functions and assets directories', async () => {
       await createExampleFromTemplates(scratchDir);
-    } catch (e) {
-      expect(e.toString()).toMatch('file already exists');
-    }
+
+      const dirs = await readdir(scratchDir);
+      const templateDirContents = await readdir(templatesDir);
+      expect(dirs).toEqual(templateDirContents);
+    });
+
+    test('it copies the functions from the templates/javascript/functions directory', async () => {
+      await createExampleFromTemplates(scratchDir);
+
+      const functions = await readdir(path.join(scratchDir, 'functions'));
+      const templateFunctions = await readdir(path.join(templatesDir, 'functions'));
+      expect(functions).toEqual(templateFunctions);
+    });
+
+    test('it rejects if there is already a functions directory', async () => {
+      await mkdir(path.join(scratchDir, 'functions'));
+      expect.assertions(1);
+      try {
+        await createExampleFromTemplates(scratchDir);
+      } catch (e) {
+        expect(e.toString()).toMatch('file already exists');
+      }
+    });
+  });
+  describe('typescript', () => {
+    const templatesDir = path.join(process.cwd(), 'templates', 'typescript');
+    test('it creates functions and assets directories', async () => {
+      await createExampleFromTemplates(scratchDir, 'typescript');
+
+      const dirs = await readdir(scratchDir);
+      const templateDirContents = await readdir(templatesDir);
+      expect(dirs).toEqual(templateDirContents);
+    });
+
+    test('it copies the typescript files from the templates/typescript/src directory', async () => {
+      await createExampleFromTemplates(scratchDir, 'typescript');
+
+      const src = await readdir(path.join(scratchDir, 'src'));
+      const templateSrc = await readdir(path.join(templatesDir, 'src'));
+      expect(src).toEqual(templateSrc);
+    });
+
+    test('it rejects if there is already a src directory', async () => {
+      await mkdir(path.join(scratchDir, 'src'));
+      expect.assertions(1);
+      try {
+        await createExampleFromTemplates(scratchDir, 'typescript');
+      } catch (e) {
+        expect(e.toString()).toMatch('file already exists');
+      }
+    });
   });
 });
 

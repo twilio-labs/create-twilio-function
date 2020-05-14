@@ -119,6 +119,17 @@ function createTsconfigFile(pathName) {
   );
 }
 
+async function createEmptyFileStructure(pathName, projectType) {
+  if (projectType === 'typescript') {
+    await createDirectory(pathName, 'src');
+    await createDirectory(pathName, path.join('src', 'functions'));
+    await createDirectory(pathName, path.join('src', 'assets'));
+  } else {
+    await createDirectory(pathName, 'functions');
+    await createDirectory(pathName, 'assets');
+  }
+}
+
 module.exports = {
   createDirectory,
   createPackageJSON,
@@ -126,4 +137,5 @@ module.exports = {
   createEnvFile,
   createNvmrcFile,
   createTsconfigFile,
+  createEmptyFileStructure,
 };

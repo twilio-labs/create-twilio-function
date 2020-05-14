@@ -14,7 +14,8 @@ const {
   createExampleFromTemplates,
   createPackageJSON,
   createNvmrcFile,
-  createTsconfigFile
+  createTsconfigFile,
+  createEmptyFileStructure,
 } = require('./create-twilio-function/create-files');
 const createGitignore = require('./create-twilio-function/create-gitignore');
 const importCredentials = require('./create-twilio-function/import-credentials');
@@ -72,6 +73,11 @@ async function createTwilioFunction(config) {
     );
     return;
   }
+  // Check to see if the project wants typescript and a template
+  if (config.template && projectType === 'typescript') {
+    await cleanUpAndExit(projectDir, spinner, 'There are no TypeScript templates available.');
+    return;
+  }
 
   // Get account sid and auth token
   let accountDetails = await importCredentials(config);
@@ -104,8 +110,7 @@ async function createTwilioFunction(config) {
       return;
     }
   } else if (config.empty) {
-    await createDirectory(projectDir, 'functions');
-    await createDirectory(projectDir, 'assets');
+    await createEmptyFileStructure(projectDir, projectType);
   } else {
     await createExampleFromTemplates(projectDir, projectType);
   }

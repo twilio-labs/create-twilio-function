@@ -17,6 +17,7 @@ const {
   createEnvFile,
   createNvmrcFile,
   createTsconfigFile,
+  createEmptyFileStructure,
 } = require('../src/create-twilio-function/create-files');
 
 const scratchDir = path.join(process.cwd(), 'scratch');
@@ -71,7 +72,7 @@ describe('createPackageJSON', () => {
     expect(packageJSON.engines.node).toEqual(versions.node);
     expect(packageJSON.devDependencies['twilio-run']).toEqual(versions.twilioRun);
     expect(packageJSON.devDependencies.typescript).toEqual(versions.typescript);
-    expect(packageJSON.devDependencies['@twilio-labs/serverless-runtime-types']).toEqual(
+    expect(packageJSON.dependencies['@twilio-labs/serverless-runtime-types']).toEqual(
       versions.serverlessRuntimeTypes,
     );
   });
@@ -212,3 +213,23 @@ describe('createTsconfig', () => {
     }
   });
 });
+
+describe('createEmptyFileStructure', () => {
+  test('creates functions and assets directory for javascript', async () => {
+    await createEmptyFileStructure(scratchDir, 'javascript');
+    const functions = await stat(path.join(scratchDir, 'functions'));
+    expect(functions.isDirectory());
+    const assets = await stat(path.join(scratchDir, 'assets'));
+    expect(assets.isDirectory());
+  });
+
+  test('creates src, functions and assets directory for typescript', async () => {
+    await createEmptyFileStructure(scratchDir, 'typescript');
+    const src = await stat(path.join(scratchDir, 'src'));
+    expect(src.isDirectory());
+    const functions = await stat(path.join(scratchDir, 'src', 'functions'));
+    expect(functions.isDirectory());
+    const assets = await stat(path.join(scratchDir, 'src', 'assets'));
+    expect(assets.isDirectory());
+  });
+})

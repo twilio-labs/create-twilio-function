@@ -19,11 +19,12 @@ async function createFile(fullPath, content) {
   return writeFile(fullPath, content, { flag: 'wx' });
 }
 
-const javaScriptDeps = { 'twilio-run': versions.twilioRun };
-const typescriptDeps = {
+const javaScriptDeps = {};
+const typescriptDeps = { '@twilio-labs/serverless-runtime-types': versions.serverlessRuntimeTypes }
+const javaScriptDevDeps = { 'twilio-run': versions.twilioRun };
+const typescriptDevDeps = {
   'twilio-run': versions.twilioRun,
   typescript: versions.typescript,
-  '@twilio-labs/serverless-runtime-types': versions.serverlessRuntimeTypes,
   'copyfiles': versions.copyfiles,
 };
 
@@ -39,8 +40,8 @@ function createPackageJSON(pathName, name, projectType = 'javascript') {
     scripts['build:copy-assets'] = 'copyfiles src/assets/* src/assets/**/* --up 2 --exclude **/*.ts dist/assets/';
     scripts['prestart'] = 'npm run build';
     scripts['predeploy'] = 'npm run build';
-    scripts['start'] += ' --cwd dist';
-    scripts['deploy'] += ' --cwd dist';
+    scripts['start'] += ' --cwd dist --env ../.env';
+    scripts['deploy'] += ' --functions-folder dist/functions --assets-folder dist/assets';
   }
   const packageJSON = JSON.stringify(
     {
@@ -48,7 +49,8 @@ function createPackageJSON(pathName, name, projectType = 'javascript') {
       version: '0.0.0',
       private: true,
       scripts,
-      devDependencies: projectType === 'typescript' ? typescriptDeps : javaScriptDeps,
+      dependencies: projectType === 'typescript' ? typescriptDeps : javaScriptDeps,
+      devDependencies: projectType === 'typescript' ? typescriptDevDeps : javaScriptDevDeps,
       engines: { node: versions.node },
     },
     null,

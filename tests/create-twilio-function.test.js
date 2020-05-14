@@ -247,7 +247,7 @@ describe('createTwilioFunction', () => {
         await createTwilioFunction({
           name,
           path: scratchDir,
-          typescript: true
+          typescript: true,
         });
 
         const dir = await stat(path.join(scratchDir, name));
@@ -291,7 +291,7 @@ describe('createTwilioFunction', () => {
           name,
           path: scratchDir,
           empty: true,
-          typescript: true
+          typescript: true,
         });
 
         const dir = await stat(path.join(scratchDir, name));
@@ -339,13 +339,13 @@ describe('createTwilioFunction', () => {
             typescript: true,
             template: 'blank',
           });
-    
+
           expect.assertions(4);
-    
+
           expect(fail).toHaveBeenCalledTimes(1);
           expect(fail).toHaveBeenCalledWith('There are no TypeScript templates available.');
           expect(console.log).not.toHaveBeenCalled();
-    
+
           try {
             await stat(path.join(scratchDir, name, 'package.json'));
           } catch (e) {

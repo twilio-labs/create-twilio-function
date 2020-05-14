@@ -37,8 +37,8 @@ const cliInfo = {
     typescript: {
       describe: 'Initialize your Serverless project with TypeScript',
       type: 'boolean',
-      default: false
-    }
+      default: false,
+    },
   },
 };
 

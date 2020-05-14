@@ -20,12 +20,12 @@ async function createFile(fullPath, content) {
 }
 
 const javaScriptDeps = {};
-const typescriptDeps = { '@twilio-labs/serverless-runtime-types': versions.serverlessRuntimeTypes }
+const typescriptDeps = { '@twilio-labs/serverless-runtime-types': versions.serverlessRuntimeTypes };
 const javaScriptDevDeps = { 'twilio-run': versions.twilioRun };
 const typescriptDevDeps = {
   'twilio-run': versions.twilioRun,
   typescript: versions.typescript,
-  'copyfiles': versions.copyfiles,
+  copyfiles: versions.copyfiles,
 };
 
 function createPackageJSON(pathName, name, projectType = 'javascript') {
@@ -34,14 +34,14 @@ function createPackageJSON(pathName, name, projectType = 'javascript') {
     test: 'echo "Error: no test specified" && exit 1',
     start: 'twilio-run',
     deploy: 'twilio-run deploy',
-  }
+  };
   if (projectType === 'typescript') {
-    scripts['build'] = 'tsc && npm run build:copy-assets';
+    scripts.build = 'tsc && npm run build:copy-assets';
     scripts['build:copy-assets'] = 'copyfiles src/assets/* src/assets/**/* --up 2 --exclude **/*.ts dist/assets/';
-    scripts['prestart'] = 'npm run build';
-    scripts['predeploy'] = 'npm run build';
-    scripts['start'] += ' --cwd dist --env ../.env';
-    scripts['deploy'] += ' --functions-folder dist/functions --assets-folder dist/assets';
+    scripts.prestart = 'npm run build';
+    scripts.predeploy = 'npm run build';
+    scripts.start += ' --cwd dist --env ../.env';
+    scripts.deploy += ' --functions-folder dist/functions --assets-folder dist/assets';
   }
   const packageJSON = JSON.stringify(
     {
@@ -54,7 +54,7 @@ function createPackageJSON(pathName, name, projectType = 'javascript') {
       engines: { node: versions.node },
     },
     null,
-    2
+    2,
   );
   return createFile(fullPath, packageJSON);
 }
@@ -66,25 +66,18 @@ function copyRecursively(src, dest) {
         stat(path.join(src, child)).then((stats) => {
           if (stats.isDirectory()) {
             return mkdir(path.join(dest, child)).then(() =>
-              copyRecursively(path.join(src, child), path.join(dest, child))
+              copyRecursively(path.join(src, child), path.join(dest, child)),
             );
           }
-          return copyFile(
-            path.join(src, child),
-            path.join(dest, child),
-            COPYFILE_EXCL
-          );
-        })
-      )
+          return copyFile(path.join(src, child), path.join(dest, child), COPYFILE_EXCL);
+        }),
+      ),
     );
   });
 }
 
 function createExampleFromTemplates(pathName, projectType = 'javascript') {
-  return copyRecursively(
-    path.join(__dirname, '..', '..', 'templates', projectType),
-    pathName
-  );
+  return copyRecursively(path.join(__dirname, '..', '..', 'templates', projectType), pathName);
 }
 
 function createEnvFile(pathName, { accountSid, authToken }) {
@@ -104,18 +97,20 @@ function createTsconfigFile(pathName) {
   const fullPath = path.join(pathName, 'tsconfig.json');
   return createFile(
     fullPath,
-    JSON.stringify({
-      compilerOptions: {
-        target: 'es5',
-        module: 'commonjs',
-        strict: true,
-        esModuleInterop: true,
-        outDir: 'dist',
-        skipLibCheck: true
+    JSON.stringify(
+      {
+        compilerOptions: {
+          target: 'es5',
+          module: 'commonjs',
+          strict: true,
+          esModuleInterop: true,
+          outDir: 'dist',
+          skipLibCheck: true,
+        },
       },
-    },
-    null,
-    2)
+      null,
+      2,
+    ),
   );
 }
 

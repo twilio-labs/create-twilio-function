@@ -3,5 +3,5 @@ module.exports = {
   node: '10',
   typescript: '^3.8',
   serverlessRuntimeTypes: '^1.1',
-  copyfiles: "^2.2.0",
+  copyfiles: '^2.2.0',
 };

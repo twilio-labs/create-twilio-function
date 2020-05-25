@@ -107,6 +107,7 @@ function createTsconfigFile(pathName) {
           esModuleInterop: true,
           outDir: 'dist',
           skipLibCheck: true,
+          sourceMap: true,
         },
       },
       null,

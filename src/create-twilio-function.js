@@ -75,7 +75,11 @@ async function createTwilioFunction(config) {
   }
   // Check to see if the project wants typescript and a template
   if (config.template && projectType === 'typescript') {
-    await cleanUpAndExit(projectDir, spinner, 'There are no TypeScript templates available.');
+    await cleanUpAndExit(
+      projectDir,
+      spinner,
+      'There are no TypeScript templates available. You can generate an example project or an empty one with the --empty',
+    );
     return;
   }
 

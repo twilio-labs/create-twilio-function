@@ -343,7 +343,9 @@ describe('createTwilioFunction', () => {
           expect.assertions(4);
 
           expect(fail).toHaveBeenCalledTimes(1);
-          expect(fail).toHaveBeenCalledWith('There are no TypeScript templates available.');
+          expect(fail).toHaveBeenCalledWith(
+            'There are no TypeScript templates available. You can generate an example project or an empty one with the --empty flag.',
+          );
           expect(console.log).not.toHaveBeenCalled();
 
           try {

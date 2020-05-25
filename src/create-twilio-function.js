@@ -78,7 +78,7 @@ async function createTwilioFunction(config) {
     await cleanUpAndExit(
       projectDir,
       spinner,
-      'There are no TypeScript templates available. You can generate an example project or an empty one with the --empty',
+      'There are no TypeScript templates available. You can generate an example project or an empty one with the --empty flag.',
     );
     return;
   }

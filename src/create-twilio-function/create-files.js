@@ -40,7 +40,7 @@ function createPackageJSON(pathName, name, projectType = 'javascript') {
     scripts['build:copy-assets'] = 'copyfiles src/assets/* src/assets/**/* --up 2 --exclude **/*.ts dist/assets/';
     scripts.prestart = 'npm run build';
     scripts.predeploy = 'npm run build';
-    scripts.start += ' --cwd dist --env ../.env';
+    scripts.start += ' --functions-folder dist/functions --assets-folder dist/assets';
     scripts.deploy += ' --functions-folder dist/functions --assets-folder dist/assets';
   }
   const packageJSON = JSON.stringify(

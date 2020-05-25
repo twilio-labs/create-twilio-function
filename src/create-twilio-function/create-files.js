@@ -36,6 +36,7 @@ function createPackageJSON(pathName, name, projectType = 'javascript') {
     deploy: 'twilio-run deploy',
   };
   if (projectType === 'typescript') {
+    scripts.test = 'tsc --noEmit';
     scripts.build = 'tsc && npm run build:copy-assets';
     scripts['build:copy-assets'] = 'copyfiles src/assets/* src/assets/**/* --up 2 --exclude **/*.ts dist/assets/';
     scripts.prestart = 'npm run build';

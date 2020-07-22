@@ -15,7 +15,7 @@ const stat = promisify(fs.stat);
 const debug = getDebugFunction('create-twilio-function:create-files');
 
 function createDirectory(pathName, dirName) {
-  const directory = path.join(pathName, dirName)
+  const directory = path.join(pathName, dirName);
   debug('Creating directory: %s', directory);
   return mkdir(directory);
 }

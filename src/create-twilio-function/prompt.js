@@ -1,7 +1,10 @@
 const inquirer = require('inquirer');
 const terminalLink = require('terminal-link');
 
+const { logger, setLogLevelByName, getDebugFunction } = require('../utils/logger');
 const validateProjectName = require('./validate-project-name');
+
+const debug = getDebugFunction('create-twilio-function:prompt');
 
 function validateAccountSid(input) {
   if (input.startsWith('AC') || input === '') {
@@ -24,9 +27,12 @@ const authTokenQuestion = {
 };
 
 function promptForAccountDetails(config) {
+  setLogLevelByName(config.logLevel);
   if (config.skipCredentials) {
+    debug('Skipping prompting for credentials');
     return {};
   }
+  debug('Prompting for missing credentials');
   const questions = [];
   if (typeof config.accountSid === 'undefined') {
     questions.push(accountSidQuestion);
@@ -35,7 +41,7 @@ function promptForAccountDetails(config) {
     questions.push(authTokenQuestion);
   }
   if (questions.length > 0) {
-    console.log(
+    logger.info(
       `Please enter your Twilio credentials which you can find in your ${terminalLink(
         'Twilio console',
         'https://twil.io/your-console',

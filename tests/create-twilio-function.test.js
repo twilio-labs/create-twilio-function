@@ -3,7 +3,6 @@ const path = require('path');
 const { promisify } = require('util');
 
 const inquirer = require('inquirer');
-const ora = require('ora');
 const nock = require('nock');
 const rimraf = promisify(require('rimraf'));
 
@@ -11,8 +10,30 @@ const mkdir = promisify(fs.mkdir);
 const stat = promisify(fs.stat);
 const readdir = promisify(fs.readdir);
 
+const mockLogger = {
+  info: jest.fn(),
+};
+const mockSpinner = {
+  start: jest.fn().mockReturnThis(),
+  succeed: jest.fn().mockReturnThis(),
+  fail: jest.fn().mockReturnThis(),
+  clear: jest.fn().mockReturnThis(),
+  stop: jest.fn().mockReturnThis(),
+};
+
+jest.mock('../src/utils/logger', () => {
+  return {
+    logger: mockLogger,
+    getOraSpinner: () => mockSpinner,
+    setLogLevelByName: jest.fn(),
+    getDebugFunction: () => jest.fn(),
+  };
+});
+
 const { installDependencies } = require('../src/create-twilio-function/install-dependencies');
 const createTwilioFunction = require('../src/create-twilio-function');
+
+console.log = jest.fn();
 
 jest.mock('window-size', () => ({ get: () => ({ width: 80 }) }));
 jest.mock('inquirer');
@@ -20,20 +41,9 @@ jest.mock('ora');
 jest.mock('boxen', () => {
   return () => 'success message';
 });
-const spinner = {
-  start: () => spinner,
-  succeed: () => spinner,
-  fail: () => spinner,
-  clear: () => spinner,
-  stop: () => spinner,
-};
-ora.mockImplementation(() => {
-  return spinner;
-});
 jest.mock('../src/create-twilio-function/install-dependencies.js', () => {
   return { installDependencies: jest.fn() };
 });
-console.log = jest.fn();
 
 const scratchDir = path.join(process.cwd(), 'scratch');
 
@@ -105,7 +115,7 @@ describe('createTwilioFunction', () => {
 
         expect(installDependencies).toHaveBeenCalledWith(path.join(scratchDir, name));
 
-        expect(console.log).toHaveBeenCalledWith('success message');
+        expect(mockLogger.info).toHaveBeenCalledWith('success message');
       });
 
       it('scaffolds an empty Twilio Function', async () => {
@@ -143,7 +153,7 @@ describe('createTwilioFunction', () => {
 
         expect(installDependencies).toHaveBeenCalledWith(path.join(scratchDir, name));
 
-        expect(console.log).toHaveBeenCalledWith('success message');
+        expect(mockLogger.info).toHaveBeenCalledWith('success message');
       });
 
       describe('templates', () => {
@@ -211,7 +221,7 @@ describe('createTwilioFunction', () => {
 
           expect(installDependencies).toHaveBeenCalledWith(path.join(scratchDir, name));
 
-          expect(console.log).toHaveBeenCalledWith('success message');
+          expect(mockLogger.info).toHaveBeenCalledWith('success message');
         });
 
         it('handles a missing template gracefully', async () => {
@@ -220,7 +230,7 @@ describe('createTwilioFunction', () => {
           const gitHubAPI = nock('https://api.github.com');
           gitHubAPI.get(`/repos/twilio-labs/function-templates/contents/${templateName}`).reply(404);
 
-          const fail = jest.spyOn(spinner, 'fail');
+          const fail = jest.spyOn(mockSpinner, 'fail');
 
           await createTwilioFunction({
             name,
@@ -282,7 +292,7 @@ describe('createTwilioFunction', () => {
 
         expect(installDependencies).toHaveBeenCalledWith(path.join(scratchDir, name));
 
-        expect(console.log).toHaveBeenCalledWith('success message');
+        expect(mockLogger.info).toHaveBeenCalledWith('success message');
       });
 
       it('scaffolds an empty Twilio Function', async () => {
@@ -326,12 +336,12 @@ describe('createTwilioFunction', () => {
 
         expect(installDependencies).toHaveBeenCalledWith(path.join(scratchDir, name));
 
-        expect(console.log).toHaveBeenCalledWith('success message');
+        expect(mockLogger.info).toHaveBeenCalledWith('success message');
       });
 
       describe('templates', () => {
         it("doesn't scaffold", async () => {
-          const fail = jest.spyOn(spinner, 'fail');
+          const fail = jest.spyOn(mockSpinner, 'fail');
           const name = 'test-function';
           await createTwilioFunction({
             name,
@@ -346,7 +356,7 @@ describe('createTwilioFunction', () => {
           expect(fail).toHaveBeenCalledWith(
             'There are no TypeScript templates available. You can generate an example project or an empty one with the --empty flag.',
           );
-          expect(console.log).not.toHaveBeenCalled();
+          expect(mockLogger.info).not.toHaveBeenCalled();
 
           try {
             await stat(path.join(scratchDir, name, 'package.json'));
@@ -360,7 +370,7 @@ describe('createTwilioFunction', () => {
     it("doesn't scaffold if the target folder name already exists", async () => {
       const name = 'test-function';
       await mkdir(path.join(scratchDir, name));
-      const fail = jest.spyOn(spinner, 'fail');
+      const fail = jest.spyOn(mockSpinner, 'fail');
 
       await createTwilioFunction({
         name,
@@ -373,7 +383,7 @@ describe('createTwilioFunction', () => {
       expect(fail).toHaveBeenCalledWith(
         `A directory called '${name}' already exists. Please create your function in a new directory.`,
       );
-      expect(console.log).not.toHaveBeenCalled();
+      expect(mockLogger.info).not.toHaveBeenCalled();
 
       try {
         await stat(path.join(scratchDir, name, 'package.json'));
@@ -391,7 +401,7 @@ describe('createTwilioFunction', () => {
       const name = 'test-function';
       const chmod = promisify(fs.chmod);
       await chmod(scratchDir, 0o555);
-      const fail = jest.spyOn(spinner, 'fail');
+      const fail = jest.spyOn(mockSpinner, 'fail');
 
       await createTwilioFunction({
         name,
@@ -404,7 +414,7 @@ describe('createTwilioFunction', () => {
       expect(fail).toHaveBeenCalledWith(
         `You do not have permission to create files or directories in the path '${scratchDir}'.`,
       );
-      expect(console.log).not.toHaveBeenCalled();
+      expect(mockLogger.info).not.toHaveBeenCalled();
 
       try {
         await stat(path.join(scratchDir, name, 'package.json'));
@@ -414,7 +424,7 @@ describe('createTwilioFunction', () => {
     });
 
     it("doesn't scaffold if empty is true and a template is defined", async () => {
-      const fail = jest.spyOn(spinner, 'fail');
+      const fail = jest.spyOn(mockSpinner, 'fail');
       const name = 'test-function';
       await createTwilioFunction({
         name,
@@ -429,7 +439,7 @@ describe('createTwilioFunction', () => {
       expect(fail).toHaveBeenCalledWith(
         'You cannot scaffold an empty Functions project with a template. Please choose empty or a template.',
       );
-      expect(console.log).not.toHaveBeenCalled();
+      expect(mockLogger.info).not.toHaveBeenCalled();
 
       try {
         await stat(path.join(scratchDir, name, 'package.json'));
@@ -489,7 +499,7 @@ describe('createTwilioFunction', () => {
 
       expect(installDependencies).toHaveBeenCalledWith(path.join(scratchDir, name));
 
-      expect(console.log).toHaveBeenCalledWith('success message');
+      expect(mockLogger.info).toHaveBeenCalledWith('success message');
     });
   });
 });

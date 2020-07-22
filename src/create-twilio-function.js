@@ -1,11 +1,11 @@
 const { promisify } = require('util');
 const path = require('path');
 
-const ora = require('ora');
 const boxen = require('boxen');
 const rimraf = promisify(require('rimraf'));
 const { downloadTemplate } = require('twilio-run/dist/templating/actions');
 
+const { logger, getOraSpinner, setLogLevelByName, getDebugFunction } = require('./utils/logger');
 const { promptForAccountDetails, promptForProjectName } = require('./create-twilio-function/prompt');
 const validateProjectName = require('./create-twilio-function/validate-project-name');
 const {
@@ -21,6 +21,8 @@ const createGitignore = require('./create-twilio-function/create-gitignore');
 const importCredentials = require('./create-twilio-function/import-credentials');
 const { installDependencies } = require('./create-twilio-function/install-dependencies');
 const successMessage = require('./create-twilio-function/success-message');
+
+const debug = getDebugFunction('create-twilio-function');
 
 async function cleanUpAndExit(projectDir, spinner, errorMessage) {
   spinner.fail(errorMessage);
@@ -44,21 +46,24 @@ async function createTwilioFunction(config) {
   }
   const projectDir = path.join(config.path, config.name);
   const projectType = config.typescript ? 'typescript' : 'javascript';
-  const spinner = ora();
+  const spinner = getOraSpinner();
+  setLogLevelByName(config.logLevel);
 
   try {
     await performTaskWithSpinner(spinner, 'Creating project directory', async () => {
+      debug('Creating project directory: %s', projectDir);
       await createDirectory(config.path, config.name);
     });
-  } catch (e) {
-    if (e.code === 'EEXIST') {
+  } catch (error) {
+    debug('%O', error);
+    if (error.code === 'EEXIST') {
       spinner.fail(
         `A directory called '${config.name}' already exists. Please create your function in a new directory.`,
       );
-    } else if (e.code === 'EACCES') {
+    } else if (error.code === 'EACCES') {
       spinner.fail(`You do not have permission to create files or directories in the path '${config.path}'.`);
     } else {
-      spinner.fail(e.message);
+      spinner.fail(error.message);
     }
     process.exitCode = 1;
     return;
@@ -109,7 +114,8 @@ async function createTwilioFunction(config) {
     await createDirectory(projectDir, 'assets');
     try {
       await downloadTemplate(config.template, '', projectDir);
-    } catch (err) {
+    } catch (error) {
+      debug('%O', error);
       await cleanUpAndExit(projectDir, spinner, `The template "${config.template}" doesn't exist`);
       return;
     }
@@ -125,7 +131,8 @@ async function createTwilioFunction(config) {
     await performTaskWithSpinner(spinner, 'Downloading .gitignore file', async () => {
       await createGitignore(projectDir);
     });
-  } catch (err) {
+  } catch (error) {
+    debug('%O', error);
     cleanUpAndExit(projectDir, spinner, 'Could not download .gitignore file');
     return;
   }
@@ -135,16 +142,16 @@ async function createTwilioFunction(config) {
     await performTaskWithSpinner(spinner, 'Installing dependencies', async () => {
       await installDependencies(projectDir);
     });
-  } catch (err) {
+  } catch (error) {
+    debug('%O', error);
     spinner.fail();
-    console.log(
+    logger.info(
       `There was an error installing the dependencies, but your project is otherwise complete in ./${config.name}`,
     );
   }
 
   // Success message
-
-  console.log(boxen(await successMessage(config), { padding: 1, borderStyle: 'round' }));
+  logger.info(boxen(await successMessage(config), { padding: 1, borderStyle: 'round' }));
 }
 
 module.exports = createTwilioFunction;

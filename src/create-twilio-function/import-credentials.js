@@ -1,5 +1,9 @@
 const inquirer = require('inquirer');
 
+const { getDebugFunction } = require('../utils/logger');
+
+const debug = getDebugFunction('create-twilio-function:import-credentials');
+
 const questions = [
   {
     type: 'confirm',
@@ -11,6 +15,7 @@ const questions = [
 
 async function importCredentials(config) {
   if (config.skipCredentials) {
+    debug('Skip importing credentials');
     return {};
   }
 
@@ -26,6 +31,7 @@ async function importCredentials(config) {
     return credentials;
   }
 
+  debug('Asking whether to import credentials');
   const { importedCredentials } = await inquirer.prompt(questions);
   return importedCredentials ? credentials : {};
 }

@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const { promisify } = require('util');
 
+const { getDebugFunction } = require('../utils/logger');
 const versions = require('./versions');
 
 const mkdir = promisify(fs.mkdir);
@@ -11,11 +12,16 @@ const copyFile = promisify(fs.copyFile);
 const { COPYFILE_EXCL } = fs.constants;
 const stat = promisify(fs.stat);
 
+const debug = getDebugFunction('create-twilio-function:create-files');
+
 function createDirectory(pathName, dirName) {
-  return mkdir(path.join(pathName, dirName));
+  const directory = path.join(pathName, dirName)
+  debug('Creating directory: %s', directory);
+  return mkdir(directory);
 }
 
 async function createFile(fullPath, content) {
+  debug('Creating file: %s', fullPath);
   return writeFile(fullPath, content, { flag: 'wx' });
 }
 
@@ -78,6 +84,7 @@ function copyRecursively(src, dest) {
 }
 
 function createExampleFromTemplates(pathName, projectType = 'javascript') {
+  debug('Creating example from templates');
   return copyRecursively(path.join(__dirname, '..', '..', 'templates', projectType), pathName);
 }
 
@@ -118,10 +125,12 @@ function createTsconfigFile(pathName) {
 
 async function createEmptyFileStructure(pathName, projectType) {
   if (projectType === 'typescript') {
+    debug('Creating directory structure for TypeScript project');
     await createDirectory(pathName, 'src');
     await createDirectory(pathName, path.join('src', 'functions'));
     await createDirectory(pathName, path.join('src', 'assets'));
   } else {
+    debug('Creating directory structure for JavaScript project');
     await createDirectory(pathName, 'functions');
     await createDirectory(pathName, 'assets');
   }

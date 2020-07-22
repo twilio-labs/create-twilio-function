@@ -109,6 +109,8 @@ Positionals:
   name  Name of your project.                                           [string]
 
 Options:
+  --logLevel, -l        Level of logging messages.
+  [string] [choices: "debug", "info", "warn", "error", "none"] [default: "info"]
   --account-sid, -a     The Account SID for your Twilio account         [string]
   --auth-token, -t      Your Twilio account Auth Token                  [string]
   --skip-credentials    Don't ask for Twilio account credentials or import them
@@ -124,7 +126,7 @@ Options:
                                                       [boolean] [default: false]
   -h, --help            Show help                                      [boolean]
   -v, --version         Show version number                            [boolean]
-  --path                                                        [default: (cwd)]
+  --path                                                [default: (wrapped-cwd)]
 ```
 
 ## Contributing

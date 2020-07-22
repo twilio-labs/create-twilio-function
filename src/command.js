@@ -1,3 +1,5 @@
+const { LoggingLevel } = require('twilio-run/dist/utils/logger');
+
 const handler = require('./create-twilio-function');
 
 const command = '$0 <name>';
@@ -5,6 +7,13 @@ const describe = 'Creates a new Twilio Function project';
 
 const cliInfo = {
   options: {
+    logLevel: {
+      type: 'string',
+      default: 'info',
+      alias: 'l',
+      describe: 'Level of logging messages.',
+      choices: Object.keys(LoggingLevel),
+    },
     'account-sid': {
       alias: 'a',
       describe: 'The Account SID for your Twilio account',

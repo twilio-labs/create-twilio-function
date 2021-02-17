@@ -61,6 +61,7 @@ describe('createPackageJSON', () => {
     expect(packageJSON.name).toEqual('project-name');
     expect(packageJSON.engines.node).toEqual(versions.node);
     expect(packageJSON.devDependencies['twilio-run']).toEqual(versions.twilioRun);
+    expect(packageJSON.dependencies.twilio).toEqual(versions.twilio);
   });
 
   test('it creates a package.json file with typescript dependencies', async () => {
@@ -73,6 +74,7 @@ describe('createPackageJSON', () => {
     expect(packageJSON.devDependencies['twilio-run']).toEqual(versions.twilioRun);
     expect(packageJSON.devDependencies.typescript).toEqual(versions.typescript);
     expect(packageJSON.dependencies['@twilio-labs/serverless-runtime-types']).toEqual(versions.serverlessRuntimeTypes);
+    expect(packageJSON.dependencies.twilio).toEqual(versions.twilio);
   });
 
   test('it rejects if there is already a package.json', async () => {

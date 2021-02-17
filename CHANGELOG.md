@@ -1,6 +1,11 @@
 # Changelog for `create-twilio-function`
 
-## Ongoing [☰](https://github.com/twilio-labs/create-twilio-function/compare/v2.3.0...master)
+## Ongoing [☰](https://github.com/twilio-labs/create-twilio-function/compare/v2.4.0...master)
+
+## 2.4.0 (Feb 17, 2021) [☰](https://github.com/twilio-labs/create-twilio-function/compare/v2.3.0...v2.4.0)
+
+- minor updates
+  - Adds `twilio` to initial package.json to avoid differences between local and deployed version of `twilio`
 
 ## 2.2.0 (May 25, 2020) [☰](https://github.com/twilio-labs/create-twilio-function/compare/v2.2.0...v2.3.0)
 

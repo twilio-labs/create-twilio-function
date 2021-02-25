@@ -81,3 +81,6 @@ typings/
 
 # Package locks
 package-lock.json
+
+# Twilio Function Specific
+.twilio-functions

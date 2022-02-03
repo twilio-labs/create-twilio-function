@@ -1,3 +1,10 @@
+# 🛑 *`create-twilio-function` is part of the [Serverless Toolkit](https://github.com/twilio-labs/serverless-toolkit/)* 🛑
+
+*The Serverless Toolkit is a monorepo containing `create-twilio-function`, `twilio-run`, `plugin-serverless`, and other supporting packages that help you create, run, deploy and update functions and assets to [Twilio Functions](https://www.twilio.com/docs/runtime/functions).*
+
+*This repo is deprecated and development continues under the [Serverless Toolkit repo](https://github.com/twilio-labs/serverless-toolkit).*
+
+
 # `create-twilio-function`
 
 A command line tool to setup a new [Twilio Function](https://www.twilio.com/docs/api/runtime/functions) with local testing using [`twilio-run`](https://github.com/twilio-labs/twilio-run).
